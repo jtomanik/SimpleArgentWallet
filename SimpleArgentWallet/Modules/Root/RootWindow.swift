@@ -18,6 +18,7 @@ class RootWindow: UIWindow {
     init(frame: CGRect, viewModel: RootViewModel) {
         self.viewModel = viewModel
         super.init(frame: frame)
+        self.backgroundColor = UIColor.systemPink
     }
 
     required init?(coder: NSCoder) {
