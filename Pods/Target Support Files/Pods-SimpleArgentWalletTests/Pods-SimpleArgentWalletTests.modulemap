@@ -1,0 +1,6 @@
+framework module Pods_SimpleArgentWalletTests {
+  umbrella header "Pods-SimpleArgentWalletTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

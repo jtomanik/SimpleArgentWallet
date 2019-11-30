@@ -1,0 +1,81 @@
+PODS:
+  - CardParts (2.21.0):
+    - RxCocoa (~> 4.5)
+    - RxDataSources (~> 3.1)
+    - RxGesture (~> 2.2)
+    - RxSwift (~> 4.5)
+  - Cartography (4.0.0)
+  - Differentiator (3.1.0)
+  - Nimble (7.3.4)
+  - Quick (2.2.0)
+  - RxBlocking (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxCocoa (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxDataSources (3.1.0):
+    - Differentiator (~> 3.0)
+    - RxCocoa (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxGesture (2.2.0):
+    - RxCocoa (~> 4.5)
+    - RxSwift (~> 4.5)
+  - RxNimble (4.4.0):
+    - RxNimble/RxBlocking (= 4.4.0)
+  - RxNimble/Core (4.4.0):
+    - Nimble (~> 7.0)
+    - RxSwift (~> 4.2)
+  - RxNimble/RxBlocking (4.4.0):
+    - RxBlocking
+    - RxNimble/Core
+  - RxOptional (3.6.2):
+    - RxCocoa (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxSwift (4.5.0)
+  - Swinject (2.7.1)
+
+DEPENDENCIES:
+  - CardParts
+  - Cartography
+  - Nimble
+  - Quick
+  - RxBlocking
+  - RxCocoa
+  - RxNimble
+  - RxOptional
+  - RxSwift
+  - Swinject
+
+SPEC REPOS:
+  trunk:
+    - CardParts
+    - Cartography
+    - Differentiator
+    - Nimble
+    - Quick
+    - RxBlocking
+    - RxCocoa
+    - RxDataSources
+    - RxGesture
+    - RxNimble
+    - RxOptional
+    - RxSwift
+    - Swinject
+
+SPEC CHECKSUMS:
+  CardParts: dd1e44302132d0a9922157a9c74e936431ba3454
+  Cartography: c5626d29056b20f1e95c017326ee4df57cc39ad8
+  Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
+  Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
+  Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
+  RxBlocking: 79413e4d916f44bb3e113c5b2cc059e36fe58910
+  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
+  RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
+  RxGesture: c1b7bf17166b0ef9d642a9510f8bac5785f18990
+  RxNimble: ba6caf0195c37fd50dd4b967624b66ff580d781a
+  RxOptional: 80426a0ddbd092573e4c482d8cc13302078c4d5e
+  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
+
+PODFILE CHECKSUM: 841ca4be287bc6316ae561a5f958c219cb0610bd
+
+COCOAPODS: 1.8.4
