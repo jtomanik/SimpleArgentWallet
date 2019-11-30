@@ -77,17 +77,15 @@ public protocol InterpretableCommand {
     static func interpret(_ command: Self) -> State.Events
 }
 
-public typealias AutomataState = ImperativeStatechartController
-
 public protocol ReactiveStateController {
-    associatedtype Controller: ImperativeStatechartController
+    associatedtype Statechart: StatechartType
     associatedtype Commands: InterpretableCommand
 
-    typealias Middleware = (Controller.State.Events) -> Observable<Controller.State.Events>
-    typealias Request = (Controller.State) -> Observable<Controller.State.Events>
+    typealias Middleware = (Statechart.Events) -> Observable<Statechart.Events>
+    typealias Request = (Statechart) -> Observable<Statechart.Events>
 
     var commands: PublishSubject<Commands> { get }
-    var output: Observable<Controller.State.Actions> { get }
+    var output: Observable<Statechart.Actions> { get }
 
     func handle(_ command: Commands)
 }
@@ -122,27 +120,29 @@ extension StatechartType where Self.Actions == Self {
     }
 }
 
-extension ReactiveStateController where Self.Commands == Self.Controller.State.Events {
+extension InterpretableCommand where Self == State.Events {
 
-    func interpret(_ command: Self.Commands) -> Self.Controller.State.Events {
+    static func interpret(_ command: Self) -> State.Events {
         return command
     }
 }
 
 // MARK: Implementations
-public class Automata<Controller: ImperativeStatechartController, Commands: InterpretableCommand>: ReactiveStateController where Commands.State == Controller.State {
+public class Automata<Statechart: StatechartType, Commands: InterpretableCommand>: ReactiveStateController where Commands.State == Statechart.State {
+
+    typealias Controller = GenericStatechart<Statechart>
 
     public let commands: PublishSubject<Commands>
 
-    public var output: Observable<Controller.State.Actions> {
+    public var output: Observable<Statechart.State.Actions> {
         return state
             .asObservable()
             .map { $0.action }
             .filterNil()
     }
 
-    public let events: PublishSubject<Controller.State.Events>
-    private let state = BehaviorSubject(value: Controller())
+    public let events: PublishSubject<Statechart.State.Events>
+    private let state: BehaviorSubject<Controller>
 
     private let middleware: Middleware
     private let request: Request
@@ -150,10 +150,12 @@ public class Automata<Controller: ImperativeStatechartController, Commands: Inte
 
     private let disposeBag = DisposeBag()
 
-    init(middleware: Middleware? = nil,
-        request: Request? = nil,
-        scheduler: ImmediateSchedulerType = MainScheduler.instance) {
+    public init(
+        stateController: GenericStatechart<Statechart>,
+        middleware: Middleware? = nil,
+        request: Request? = nil) {
 
+        self.state = BehaviorSubject(value: stateController)
         self.commands = PublishSubject()
         self.events = PublishSubject()
 
@@ -196,7 +198,15 @@ public class Automata<Controller: ImperativeStatechartController, Commands: Inte
             })
             .disposed(by: disposeBag)
     }
+    
+    convenience init() {
+        self.init(
+        stateController: GenericStatechart<Statechart>(),
+        middleware: nil,
+        request: nil)
+    }
 }
+
 
 extension Automata {
 
