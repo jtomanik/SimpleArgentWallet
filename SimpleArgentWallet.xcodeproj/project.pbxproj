@@ -13,6 +13,8 @@
 		7AFEE0372392AF4900FAE54E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AFEE0362392AF4900FAE54E /* Assets.xcassets */; };
 		7AFEE03A2392AF4900FAE54E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AFEE0382392AF4900FAE54E /* LaunchScreen.storyboard */; };
 		7AFEE0502392B00C00FAE54E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 7AFEE04F2392B00C00FAE54E /* Podfile */; };
+		7AFEE0522392B29500FAE54E /* Automata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0512392B29500FAE54E /* Automata.swift */; };
+		7AFEE0552392B2CA00FAE54E /* ObservableType+OptionalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0542392B2CA00FAE54E /* ObservableType+OptionalType.swift */; };
 		CB20A06C740A1BFDB3280843 /* Pods_SimpleArgentWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,8 @@
 		7AFEE0402392AF4900FAE54E /* SimpleArgentWalletTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleArgentWalletTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AFEE0462392AF4900FAE54E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AFEE04F2392B00C00FAE54E /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		7AFEE0512392B29500FAE54E /* Automata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Automata.swift; sourceTree = "<group>"; };
+		7AFEE0542392B2CA00FAE54E /* ObservableType+OptionalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObservableType+OptionalType.swift"; sourceTree = "<group>"; };
 		8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleArgentWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B748DFA3EDC28411BB6CDBC7 /* Pods-SimpleArgentWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWalletTests.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWalletTests/Pods-SimpleArgentWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		BAC7128F3105BF4F6CA52B67 /* Pods-SimpleArgentWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWallet.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWallet/Pods-SimpleArgentWallet.release.xcconfig"; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 				7AFEE0362392AF4900FAE54E /* Assets.xcassets */,
 				7AFEE0382392AF4900FAE54E /* LaunchScreen.storyboard */,
 				7AFEE03B2392AF4900FAE54E /* Info.plist */,
+				7AFEE0532392B29C00FAE54E /* Automata */,
 			);
 			path = SimpleArgentWallet;
 			sourceTree = "<group>";
@@ -103,6 +108,15 @@
 				7AFEE0462392AF4900FAE54E /* Info.plist */,
 			);
 			path = SimpleArgentWalletTests;
+			sourceTree = "<group>";
+		};
+		7AFEE0532392B29C00FAE54E /* Automata */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE0512392B29500FAE54E /* Automata.swift */,
+				7AFEE0542392B2CA00FAE54E /* ObservableType+OptionalType.swift */,
+			);
+			path = Automata;
 			sourceTree = "<group>";
 		};
 		D8D0FDE0DB75EE2804BD2643 /* Pods */ = {
@@ -312,6 +326,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AFEE0322392AF4700FAE54E /* ViewController.swift in Sources */,
+				7AFEE0522392B29500FAE54E /* Automata.swift in Sources */,
+				7AFEE0552392B2CA00FAE54E /* ObservableType+OptionalType.swift in Sources */,
 				7AFEE02E2392AF4700FAE54E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
