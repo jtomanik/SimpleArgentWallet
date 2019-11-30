@@ -7,25 +7,25 @@
 //
 
 import UIKit
+import Swinject
+
+let container = Assembler()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
+    var window: RootWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        setupWindow()
+        container.apply(assembly: Modules.Root())
+        container.apply(assembly: Modules.Lock())
+        container.apply(assembly: Modules.Wallet())
 
+        window = Modules.Root.makeWindow()
+        window?.viewModel.start()
+        
         return true
-    }
-
-    private func setupWindow() {
-        let bounds = UIScreen.main.bounds
-        window = UIWindow(frame: bounds)
-        window?.backgroundColor = UIColor.white
-        window?.rootViewController = UIViewController()
-        self.window?.makeKeyAndVisible()
     }
 }
 
