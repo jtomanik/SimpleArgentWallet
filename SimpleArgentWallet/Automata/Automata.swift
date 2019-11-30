@@ -205,6 +205,13 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
         middleware: nil,
         request: nil)
     }
+
+    convenience init(middleware: Middleware?, request: Request?) {
+        self.init(
+        stateController: GenericStatechart<Statechart>(),
+        middleware: middleware,
+        request: request)
+    }
 }
 
 
