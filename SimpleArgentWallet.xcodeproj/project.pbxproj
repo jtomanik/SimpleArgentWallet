@@ -23,6 +23,10 @@
 		7AFEE0682392BAEB00FAE54E /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0672392BAEB00FAE54E /* RootViewModel.swift */; };
 		7AFEE06A2392BD5A00FAE54E /* RootViewPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0692392BD5A00FAE54E /* RootViewPresenting.swift */; };
 		7AFEE06E2392BECD00FAE54E /* Resolver+fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE06D2392BECD00FAE54E /* Resolver+fetch.swift */; };
+		7AFEE0702392F26700FAE54E /* LockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE06F2392F26700FAE54E /* LockViewController.swift */; };
+		7AFEE0732392F29100FAE54E /* LockUIComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0722392F29100FAE54E /* LockUIComponents.swift */; };
+		7AFEE0752392F2F700FAE54E /* LockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0742392F2F700FAE54E /* LockViewModel.swift */; };
+		7AFEE077239309A400FAE54E /* PinValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE076239309A400FAE54E /* PinValidator.swift */; };
 		CB20A06C740A1BFDB3280843 /* Pods_SimpleArgentWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +62,10 @@
 		7AFEE0672392BAEB00FAE54E /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		7AFEE0692392BD5A00FAE54E /* RootViewPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewPresenting.swift; sourceTree = "<group>"; };
 		7AFEE06D2392BECD00FAE54E /* Resolver+fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Resolver+fetch.swift"; sourceTree = "<group>"; };
+		7AFEE06F2392F26700FAE54E /* LockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockViewController.swift; sourceTree = "<group>"; };
+		7AFEE0722392F29100FAE54E /* LockUIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUIComponents.swift; sourceTree = "<group>"; };
+		7AFEE0742392F2F700FAE54E /* LockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockViewModel.swift; sourceTree = "<group>"; };
+		7AFEE076239309A400FAE54E /* PinValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidator.swift; sourceTree = "<group>"; };
 		8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleArgentWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B748DFA3EDC28411BB6CDBC7 /* Pods-SimpleArgentWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWalletTests.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWalletTests/Pods-SimpleArgentWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		BAC7128F3105BF4F6CA52B67 /* Pods-SimpleArgentWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWallet.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWallet/Pods-SimpleArgentWallet.release.xcconfig"; sourceTree = "<group>"; };
@@ -171,6 +179,9 @@
 			isa = PBXGroup;
 			children = (
 				7AFEE0612392B9AD00FAE54E /* Lock.swift */,
+				7AFEE0742392F2F700FAE54E /* LockViewModel.swift */,
+				7AFEE0712392F26B00FAE54E /* UI */,
+				7AFEE078239309AA00FAE54E /* Services */,
 			);
 			path = Lock;
 			sourceTree = "<group>";
@@ -181,6 +192,23 @@
 				7AFEE0642392BA7200FAE54E /* Wallet.swift */,
 			);
 			path = Wallet;
+			sourceTree = "<group>";
+		};
+		7AFEE0712392F26B00FAE54E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE06F2392F26700FAE54E /* LockViewController.swift */,
+				7AFEE0722392F29100FAE54E /* LockUIComponents.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7AFEE078239309AA00FAE54E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE076239309A400FAE54E /* PinValidator.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		D8D0FDE0DB75EE2804BD2643 /* Pods */ = {
@@ -389,13 +417,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AFEE0732392F29100FAE54E /* LockUIComponents.swift in Sources */,
 				7AFEE0682392BAEB00FAE54E /* RootViewModel.swift in Sources */,
+				7AFEE0702392F26700FAE54E /* LockViewController.swift in Sources */,
 				7AFEE06A2392BD5A00FAE54E /* RootViewPresenting.swift in Sources */,
 				7AFEE06E2392BECD00FAE54E /* Resolver+fetch.swift in Sources */,
+				7AFEE0752392F2F700FAE54E /* LockViewModel.swift in Sources */,
 				7AFEE0522392B29500FAE54E /* Automata.swift in Sources */,
 				7AFEE0552392B2CA00FAE54E /* ObservableType+OptionalType.swift in Sources */,
 				7AFEE0602392B88400FAE54E /* Root.swift in Sources */,
 				7AFEE05A2392B77200FAE54E /* RootWindow.swift in Sources */,
+				7AFEE077239309A400FAE54E /* PinValidator.swift in Sources */,
 				7AFEE05E2392B7D300FAE54E /* Modules.swift in Sources */,
 				7AFEE0572392B71100FAE54E /* Observable+weak.swift in Sources */,
 				7AFEE0652392BA7200FAE54E /* Wallet.swift in Sources */,
