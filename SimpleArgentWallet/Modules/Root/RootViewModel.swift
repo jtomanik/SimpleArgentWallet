@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol RootViewModel {
-    var output: Observable<Modules.Root.Routes> { get }
+    var route: Observable<Modules.Root.Routes> { get }
 
     func start()
     func lock()
@@ -70,6 +70,10 @@ extension AppSessionState.Events: InterpretableCommand {
 }
 
 class AppSession: Automata<AppSessionState, AppSessionState.Events>, RootViewModel {
+
+    var route: Observable<Modules.Root.Routes> {
+        return self.output
+    }
 
     func start() {
         self.handle(.start)

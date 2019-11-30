@@ -32,7 +32,7 @@ extension Modules.Root {
         let window = RootWindow(frame: bounds,
                                 viewModel: vm)
 
-        window.viewModel.output
+        window.viewModel.route
             .observeOn(MainScheduler.instance)
             .bind(onNext: Modules.Root.navigate)
             .disposed(by: window.disposeBag)
