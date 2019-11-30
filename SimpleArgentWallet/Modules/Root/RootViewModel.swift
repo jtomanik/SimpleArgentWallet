@@ -13,6 +13,7 @@ protocol RootViewModel {
     var output: Observable<Modules.Root.Routes> { get }
 
     func start()
+    func lock()
 }
 
 enum AppSessionState: FiniteStateType {
@@ -46,5 +47,35 @@ extension AppSessionState: ReducableState {
         default:
             return state
         }
+    }
+}
+
+extension AppSessionState: StatechartType, ActionableState {
+    typealias Actions = Modules.Root.Routes
+
+    static func transform(_ state: AppSessionState) -> Modules.Root.Routes? {
+        switch state {
+        case .unlocked(let isFromLock):
+            return .mainUI(fromLock: isFromLock)
+        case .locked:
+            return .lockedUI
+        default:
+            return nil
+        }
+    }
+}
+
+extension AppSessionState.Events: InterpretableCommand {
+    typealias State = AppSessionState
+}
+
+class AppSession: Automata<AppSessionState, AppSessionState.Events>, RootViewModel {
+
+    func start() {
+        self.handle(.start)
+    }
+
+    func lock() {
+        self.handle(.lock)
     }
 }

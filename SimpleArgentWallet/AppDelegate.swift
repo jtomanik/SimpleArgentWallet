@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        container.apply(assembly: self)
         container.apply(assembly: Modules.Root())
         container.apply(assembly: Modules.Lock())
         container.apply(assembly: Modules.Wallet())
@@ -26,6 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.viewModel.start()
         
         return true
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+        window?.viewModel.lock()
     }
 }
 

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Swinject
 
 protocol RootViewPresenting {
     func show(_ vc: UIViewController)
@@ -32,4 +33,11 @@ extension AppDelegate: RootViewPresenting {
     }
 }
 
+extension AppDelegate: Assembly {
 
+    func assemble(container: Container) {
+        container.register(RootViewPresenting.self) { _ in
+            return self
+        }.inObjectScope(.weak)
+    }
+}

@@ -39,12 +39,6 @@ extension Modules.Root {
 
         return window
     }
-
-    static func make() -> UIViewController {
-        let vc = UIViewController()
-        vc.view.backgroundColor = UIColor.white
-        return vc
-    }
 }
 
 extension Modules.Root {
@@ -68,5 +62,8 @@ extension Modules.Root {
 extension Modules.Root: Assembly {
 
     func assemble(container: Container) {
+        container.register(RootViewModel.self) { _ in
+            AppSession()
+        }.inObjectScope(.weak)
     }
 }
