@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 import Swinject
 
 extension Modules {
@@ -19,8 +21,14 @@ extension Modules {
 extension Modules.Lock {
 
     static func make() -> UIViewController {
-        let vc = UIViewController()
-        vc.view.backgroundColor = UIColor.red
+        let vm = PinLock(validator: PinValidator())
+        let vc = LockViewController(viewModel: vm)
+
+        vc.viewModel.route
+            .observeOn(MainScheduler.instance)
+            .bind(onNext: Modules.Root.navigate)
+            .disposed(by: vc.disposeBag)
+
         return vc
     }
 }
