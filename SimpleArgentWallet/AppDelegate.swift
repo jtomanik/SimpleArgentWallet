@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: RootWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+        WalletTheme().apply()
+        
         container.apply(assembly: self)
         container.apply(assembly: Modules.Root())
         container.apply(assembly: Modules.Lock())
