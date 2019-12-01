@@ -20,7 +20,7 @@ class BaseEthereumRequest {
     }
 }
 
-class BalanceInformation: BaseEthereumRequest {
+class BalanceInformation: BaseEthereumRequest, BalanceInformationProvider {
 
     func fetch(for address: Ethereum.Address) -> Observable<BigUInt> {
         return Observable<BigUInt>.create { [requester] observer -> Disposable in
