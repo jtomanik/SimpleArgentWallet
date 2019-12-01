@@ -19,8 +19,10 @@ extension Modules {
 extension Modules.Wallet {
 
     static func make() -> UIViewController {
-        let vc = UIViewController()
-        vc.view.backgroundColor = UIColor.blue
+        let vm = ArgentWallet(walletInfo: container.resolver.fetch(WalletProvider.self),
+                              balanceInfo: container.resolver.fetch(BalanceInformationProvider.self),
+                              priceFeed: container.resolver.fetch(PriceFeedProvider.self))
+        let vc = WalletViewController(viewModel: vm)
         return vc
     }
 }
