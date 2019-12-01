@@ -11,8 +11,11 @@ target 'SimpleArgentWallet' do
     pod 'RxCocoa'
     pod 'RxOptional'
 
+    pod 'web3.swift'
+
     pod 'CardParts'
     pod 'Cartography'
+    pod 'SwiftEntryKit'
 end
 
 target 'SimpleArgentWalletTests' do
