@@ -16,27 +16,30 @@ protocol RootViewModel {
     func lock()
 }
 
-enum AppSessionState: FiniteStateType {
+extension Modules.Root {
 
-    static var initialState: AppSessionState {
-        return .loading
-    }
+    enum State: FiniteStateType {
 
-    case loading
-    case unlocked(fromLock: Bool)
-    case locked
+        static var initialState: State {
+            return .loading
+        }
 
-    enum Events {
-        case start
-        case lock
-        case unlock
+        case loading
+        case unlocked(fromLock: Bool)
+        case locked
+
+        enum Events {
+            case start
+            case lock
+            case unlock
+        }
     }
 }
 
-extension AppSessionState: ReducableState {
-    typealias State = AppSessionState
+extension Modules.Root.State: ReducableState {
+    typealias State = Modules.Root.State
 
-    static func reduce(_ state: AppSessionState, _ event: AppSessionState.Events) -> AppSessionState {
+    static func reduce(_ state: State, _ event: State.Events) -> State {
         switch (state, event) {
         case (.loading, .start):
             return .unlocked(fromLock: false)
@@ -50,10 +53,10 @@ extension AppSessionState: ReducableState {
     }
 }
 
-extension AppSessionState: StatechartType, ActionableState {
+extension Modules.Root.State: StatechartType, ActionableState {
     typealias Actions = Modules.Root.Routes
 
-    static func transform(_ state: AppSessionState) -> Modules.Root.Routes? {
+    static func transform(_ state: State) -> Modules.Root.Routes? {
         switch state {
         case .unlocked(let isFromLock):
             return .mainUI(fromLock: isFromLock)
@@ -65,11 +68,11 @@ extension AppSessionState: StatechartType, ActionableState {
     }
 }
 
-extension AppSessionState.Events: InterpretableCommand {
-    typealias State = AppSessionState
+extension Modules.Root.State.Events: InterpretableCommand {
+    typealias State = Modules.Root.State
 }
 
-class AppSession: Automata<AppSessionState, AppSessionState.Events>, RootViewModel {
+class AppSession: Automata<Modules.Root.State, Modules.Root.State.Events>, RootViewModel {
 
     var route: Observable<Modules.Root.Routes> {
         return self.output
