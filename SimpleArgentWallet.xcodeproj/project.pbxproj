@@ -27,6 +27,18 @@
 		7AFEE0732392F29100FAE54E /* LockUIComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0722392F29100FAE54E /* LockUIComponents.swift */; };
 		7AFEE0752392F2F700FAE54E /* LockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0742392F2F700FAE54E /* LockViewModel.swift */; };
 		7AFEE077239309A400FAE54E /* PinValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE076239309A400FAE54E /* PinValidator.swift */; };
+		7AFEE07C23933AFD00FAE54E /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */; };
+		7AFEE07E23933DC100FAE54E /* NetworkRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE07D23933DC100FAE54E /* NetworkRequester.swift */; };
+		7AFEE08123933DFE00FAE54E /* PriceFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE08023933DFE00FAE54E /* PriceFeed.swift */; };
+		7AFEE08323933E4C00FAE54E /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE08223933E4C00FAE54E /* WalletViewController.swift */; };
+		7AFEE0862393CA5400FAE54E /* EthereumRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0852393CA5400FAE54E /* EthereumRequester.swift */; };
+		7AFEE0882393CF3800FAE54E /* Ethereum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0872393CF3800FAE54E /* Ethereum.swift */; };
+		7AFEE08B23940B9400FAE54E /* Argent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE08A23940B9400FAE54E /* Argent.swift */; };
+		7AFEE08D2394159600FAE54E /* BaseEthereumRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE08C2394159600FAE54E /* BaseEthereumRequests.swift */; };
+		7AFEE08F23941BFD00FAE54E /* SignedEthereumRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE08E23941BFD00FAE54E /* SignedEthereumRequest.swift */; };
+		7AFEE0912394235200FAE54E /* WalletTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0902394235200FAE54E /* WalletTheme.swift */; };
+		7AFEE0932394238500FAE54E /* ArgentAccountCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE0922394238500FAE54E /* ArgentAccountCardViewController.swift */; };
+		7AFEE095239455F400FAE54E /* Keystore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE094239455F400FAE54E /* Keystore.swift */; };
 		CB20A06C740A1BFDB3280843 /* Pods_SimpleArgentWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,7 +62,7 @@
 		7AFEE03B2392AF4900FAE54E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AFEE0402392AF4900FAE54E /* SimpleArgentWalletTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleArgentWalletTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AFEE0462392AF4900FAE54E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7AFEE04F2392B00C00FAE54E /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		7AFEE04F2392B00C00FAE54E /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7AFEE0512392B29500FAE54E /* Automata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Automata.swift; sourceTree = "<group>"; };
 		7AFEE0542392B2CA00FAE54E /* ObservableType+OptionalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObservableType+OptionalType.swift"; sourceTree = "<group>"; };
 		7AFEE0562392B71100FAE54E /* Observable+weak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+weak.swift"; sourceTree = "<group>"; };
@@ -66,6 +78,18 @@
 		7AFEE0722392F29100FAE54E /* LockUIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUIComponents.swift; sourceTree = "<group>"; };
 		7AFEE0742392F2F700FAE54E /* LockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockViewModel.swift; sourceTree = "<group>"; };
 		7AFEE076239309A400FAE54E /* PinValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidator.swift; sourceTree = "<group>"; };
+		7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
+		7AFEE07D23933DC100FAE54E /* NetworkRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequester.swift; sourceTree = "<group>"; };
+		7AFEE08023933DFE00FAE54E /* PriceFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFeed.swift; sourceTree = "<group>"; };
+		7AFEE08223933E4C00FAE54E /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
+		7AFEE0852393CA5400FAE54E /* EthereumRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumRequester.swift; sourceTree = "<group>"; };
+		7AFEE0872393CF3800FAE54E /* Ethereum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ethereum.swift; sourceTree = "<group>"; };
+		7AFEE08A23940B9400FAE54E /* Argent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Argent.swift; sourceTree = "<group>"; };
+		7AFEE08C2394159600FAE54E /* BaseEthereumRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEthereumRequests.swift; sourceTree = "<group>"; };
+		7AFEE08E23941BFD00FAE54E /* SignedEthereumRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedEthereumRequest.swift; sourceTree = "<group>"; };
+		7AFEE0902394235200FAE54E /* WalletTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTheme.swift; sourceTree = "<group>"; };
+		7AFEE0922394238500FAE54E /* ArgentAccountCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArgentAccountCardViewController.swift; sourceTree = "<group>"; };
+		7AFEE094239455F400FAE54E /* Keystore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keystore.swift; sourceTree = "<group>"; };
 		8650347BE64B1C98404B73CF /* Pods_SimpleArgentWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleArgentWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B748DFA3EDC28411BB6CDBC7 /* Pods-SimpleArgentWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWalletTests.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWalletTests/Pods-SimpleArgentWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		BAC7128F3105BF4F6CA52B67 /* Pods-SimpleArgentWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWallet.release.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWallet/Pods-SimpleArgentWallet.release.xcconfig"; sourceTree = "<group>"; };
@@ -190,6 +214,10 @@
 			isa = PBXGroup;
 			children = (
 				7AFEE0642392BA7200FAE54E /* Wallet.swift */,
+				7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */,
+				7AFEE07F23933DC900FAE54E /* Services */,
+				7AFEE08423933E5400FAE54E /* UI */,
+				7AFEE0892393CF3E00FAE54E /* Domain */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -209,6 +237,38 @@
 				7AFEE076239309A400FAE54E /* PinValidator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		7AFEE07F23933DC900FAE54E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE07D23933DC100FAE54E /* NetworkRequester.swift */,
+				7AFEE08023933DFE00FAE54E /* PriceFeed.swift */,
+				7AFEE0852393CA5400FAE54E /* EthereumRequester.swift */,
+				7AFEE08C2394159600FAE54E /* BaseEthereumRequests.swift */,
+				7AFEE08E23941BFD00FAE54E /* SignedEthereumRequest.swift */,
+				7AFEE094239455F400FAE54E /* Keystore.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		7AFEE08423933E5400FAE54E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE0902394235200FAE54E /* WalletTheme.swift */,
+				7AFEE08223933E4C00FAE54E /* WalletViewController.swift */,
+				7AFEE0922394238500FAE54E /* ArgentAccountCardViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7AFEE0892393CF3E00FAE54E /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				7AFEE0872393CF3800FAE54E /* Ethereum.swift */,
+				7AFEE08A23940B9400FAE54E /* Argent.swift */,
+			);
+			path = Domain;
 			sourceTree = "<group>";
 		};
 		D8D0FDE0DB75EE2804BD2643 /* Pods */ = {
@@ -419,20 +479,32 @@
 			files = (
 				7AFEE0732392F29100FAE54E /* LockUIComponents.swift in Sources */,
 				7AFEE0682392BAEB00FAE54E /* RootViewModel.swift in Sources */,
+				7AFEE0912394235200FAE54E /* WalletTheme.swift in Sources */,
 				7AFEE0702392F26700FAE54E /* LockViewController.swift in Sources */,
 				7AFEE06A2392BD5A00FAE54E /* RootViewPresenting.swift in Sources */,
 				7AFEE06E2392BECD00FAE54E /* Resolver+fetch.swift in Sources */,
 				7AFEE0752392F2F700FAE54E /* LockViewModel.swift in Sources */,
 				7AFEE0522392B29500FAE54E /* Automata.swift in Sources */,
 				7AFEE0552392B2CA00FAE54E /* ObservableType+OptionalType.swift in Sources */,
+				7AFEE0882393CF3800FAE54E /* Ethereum.swift in Sources */,
 				7AFEE0602392B88400FAE54E /* Root.swift in Sources */,
+				7AFEE08323933E4C00FAE54E /* WalletViewController.swift in Sources */,
+				7AFEE07C23933AFD00FAE54E /* WalletViewModel.swift in Sources */,
 				7AFEE05A2392B77200FAE54E /* RootWindow.swift in Sources */,
+				7AFEE07E23933DC100FAE54E /* NetworkRequester.swift in Sources */,
 				7AFEE077239309A400FAE54E /* PinValidator.swift in Sources */,
+				7AFEE0862393CA5400FAE54E /* EthereumRequester.swift in Sources */,
 				7AFEE05E2392B7D300FAE54E /* Modules.swift in Sources */,
 				7AFEE0572392B71100FAE54E /* Observable+weak.swift in Sources */,
 				7AFEE0652392BA7200FAE54E /* Wallet.swift in Sources */,
+				7AFEE08D2394159600FAE54E /* BaseEthereumRequests.swift in Sources */,
 				7AFEE0622392B9AD00FAE54E /* Lock.swift in Sources */,
+				7AFEE0932394238500FAE54E /* ArgentAccountCardViewController.swift in Sources */,
+				7AFEE095239455F400FAE54E /* Keystore.swift in Sources */,
+				7AFEE08B23940B9400FAE54E /* Argent.swift in Sources */,
+				7AFEE08F23941BFD00FAE54E /* SignedEthereumRequest.swift in Sources */,
 				7AFEE02E2392AF4700FAE54E /* AppDelegate.swift in Sources */,
+				7AFEE08123933DFE00FAE54E /* PriceFeed.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
