@@ -109,6 +109,7 @@ class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
             request: PinLock.requestPinValidation(digits: Statechart.pinLength))
     }
 
+    //TODO: use makeMiddleware
     static func middlewarePinValidation(with validator: PinValidation) -> Middleware {
         return { event -> Observable<Statechart.Events> in
             guard case let .validating(input) = event else {
@@ -120,6 +121,7 @@ class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
         }
     }
 
+    //TODO: Use makeRequest
     static func requestPinValidation(digits: Int) -> Request {
         return { state -> Observable<Statechart.Events> in
             guard case let .pin(input) = state,
