@@ -19,31 +19,31 @@ struct Ethereum {}
 
 extension Ethereum {
 
-    struct Wallet {
+    struct Wallet: Equatable {
         let address: Address
         let privateKey: BigUInt
     }
 
-    struct Address {
+    struct Address: Equatable {
         let value: BigUInt
 
         var hexString: String {
-            return String(value, radix: 16, uppercase: false)
+            return "0x\(String(value, radix: 16, uppercase: false))"
         }
      }
 
-    struct Transaction {
+    struct Transaction: Equatable {
         let from: Address
         let to: Address
         let amount: BigUInt
     }
 
-    struct ERC20 {
+    struct ERC20: Equatable {
         let contract: Address
         let name: String
     }
 
-    struct ERC20Transaction {
+    struct ERC20Transaction: Equatable {
         let token: ERC20
         let transaction: Transaction
         let block: BigUInt
