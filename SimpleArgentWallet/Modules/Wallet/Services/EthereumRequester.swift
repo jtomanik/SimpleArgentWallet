@@ -12,13 +12,13 @@ import BigInt
 
 class EthereumRequester {
 
-    let defaultGatewayURL = URL(string: "https://ropsten.infura.io/v3/735489d9f846491faae7a31e1862d24b")!
+    static let defaultGatewayURL = URL(string: "https://ropsten.infura.io/v3/735489d9f846491faae7a31e1862d24b")!
 
     let gatewayURL: URL
     let client: EthereumClient
 
     init(gateway: URL? = nil) {
-        self.gatewayURL = gateway ?? defaultGatewayURL
+        self.gatewayURL = gateway ?? EthereumRequester.defaultGatewayURL
         self.client = EthereumClient(url: gatewayURL)
     }
 }
