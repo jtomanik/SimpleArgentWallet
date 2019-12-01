@@ -27,36 +27,39 @@ protocol PinValidation {
     func validate(pin: [Int]) -> Observable<Bool>
 }
 
-enum LockState: FiniteStateType {
+extension Modules.Lock {
 
-    static var pinLength: Int {
-        return 4
-    }
+    enum State: FiniteStateType {
 
-    static var initialState: LockState {
-        return .initial(pinLength: pinLength)
-    }
+        static var pinLength: Int {
+            return 4
+        }
 
-    case initial(pinLength: Int)
-    case pin([Int])
-    case invalid
-    case valid
+        static var initialState: State {
+            return .initial(pinLength: pinLength)
+        }
 
-    enum Events {
-        case digit(Int)
-        case validating([Int])
-        case back
-        case reset
-        case pinValid
-        case pinInvalid
-//        case biometrics
+        case initial(pinLength: Int)
+        case pin([Int])
+        case invalid
+        case valid
+
+        enum Events {
+            case digit(Int)
+            case validating([Int])
+            case back
+            case reset
+            case pinValid
+            case pinInvalid
+    //        case biometrics
+        }
     }
 }
 
-extension LockState: ReducableState {
-    typealias State = LockState
+extension Modules.Lock.State: ReducableState {
+    typealias State = Modules.Lock.State
 
-    static func reduce(_ state: LockState, _ event: LockState.Events) -> LockState {
+    static func reduce(_ state: State, _ event: State.Events) -> State {
         switch (state, event) {
         case (.initial, .digit(let i)):
             return .pin([i])
@@ -90,15 +93,15 @@ extension LockState: ReducableState {
     }
 }
 
-extension LockState: StatechartType, ActionableState {
-    typealias Actions = LockState
+extension Modules.Lock.State: StatechartType, ActionableState {
+    typealias Actions = Modules.Lock.State
 }
 
-extension LockState.Events: InterpretableCommand {
-    typealias State = LockState
+extension Modules.Lock.State.Events: InterpretableCommand {
+    typealias State = Modules.Lock.State
 }
 
-class PinLock: Automata<LockState, LockState.Events> {
+class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
 
     convenience init(validator: PinValidation) {
         self.init(
@@ -107,23 +110,23 @@ class PinLock: Automata<LockState, LockState.Events> {
     }
 
     static func middlewarePinValidation(with validator: PinValidation) -> Middleware {
-        return { event -> Observable<LockState.Events> in
+        return { event -> Observable<Statechart.Events> in
             guard case let .validating(input) = event else {
                 return Observable.just(event)
             }
             return validator
                 .validate(pin: input)
-                .map { return $0 ? LockState.Events.pinValid : LockState.Events.pinInvalid }
+                .map { return $0 ? Statechart.Events.pinValid : Statechart.Events.pinInvalid }
         }
     }
 
     static func requestPinValidation(digits: Int) -> Request {
-        return { state -> Observable<LockState.Events> in
+        return { state -> Observable<Statechart.Events> in
             guard case let .pin(input) = state,
                 input.count == digits else {
                 return Observable.empty()
             }
-            return Observable.just(LockState.Events.validating(input))
+            return Observable.just(Statechart.Events.validating(input))
         }
     }
 }
@@ -152,14 +155,14 @@ extension PinLock: LockViewModel {
         self.handle(.reset)
     }
 
-    private static func transform(_ state: LockState) -> Modules.Lock.DisplayModel? {
+    private static func transform(_ state: Statechart) -> Modules.Lock.DisplayModel? {
         switch state {
         case .initial:
             return Modules.Lock.DisplayModel(currentPINlength: 0, isWrongPIN: false)
         case .pin(let digits):
             return Modules.Lock.DisplayModel(currentPINlength: digits.count, isWrongPIN: false)
         case .invalid:
-            return Modules.Lock.DisplayModel(currentPINlength: LockState.pinLength, isWrongPIN: true)
+            return Modules.Lock.DisplayModel(currentPINlength: Modules.Lock.State.pinLength, isWrongPIN: true)
         default:
             return nil
         }
@@ -174,7 +177,7 @@ extension PinLock: RoutableLock {
             .filterNil()
     }
 
-    private static func transform(_ state: LockState) -> Modules.Root.Routes? {
+    private static func transform(_ state: Statechart) -> Modules.Root.Routes? {
         guard case .valid = state else {
             return nil
         }
