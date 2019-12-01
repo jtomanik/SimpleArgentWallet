@@ -159,8 +159,8 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
         self.commands = PublishSubject()
         self.events = PublishSubject()
 
-        self.middleware = middleware ?? { event in return Observable.just(event) }
-        self.request = request ?? { _ in return Observable.empty() }
+        self.middleware = middleware ?? Automata.passthroughMiddleware()
+        self.request = request ?? Automata.passthroughRequest()
 
         commands
             .asObservable()
@@ -174,11 +174,14 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
             .observeOn(MainScheduler.asyncInstance)
             .withLatestFrom(state) { ($1, $0) }
             .map { self.update($0.0, $0.1)}
+            .distinctUntilChanged { $0.state == $1.state }
             .do(onNext: { [weak self] controller in
                 self?.executeRequests(for: controller.state)
             })
             .subscribe(state)
             .disposed(by: disposeBag)
+
+        executeRequests(for: stateController.state)
     }
 
     public func handle(_ command: Commands) {
@@ -262,13 +265,13 @@ extension Automata {
         }
     }
 
+    static func passthroughMiddleware() -> Middleware {
+        return { event in return Observable.just(event) }
+    }
+
     private static func sanitize(middlewares array: [Middleware]) -> [Middleware] {
         guard !array.isEmpty else {
-            func passthru(_ event: Controller.State.Events) -> Observable<Controller.State.Events> {
-                return Observable.just(event)
-            }
-
-            return [passthru]
+            return [Automata.passthroughMiddleware()]
         }
 
         return array
@@ -306,13 +309,13 @@ extension Automata {
         }
     }
 
+    static func passthroughRequest() -> Request {
+        return { _ in return Observable.empty() }
+    }
+
     private static func sanitize(requests array: [Request]) -> [Request] {
         guard !array.isEmpty else {
-            func passthru(_ state: Controller.State) -> Observable<Controller.State.Events> {
-                return Observable.empty()
-            }
-
-            return [passthru]
+            return [Automata.passthroughRequest()]
         }
 
         return array
