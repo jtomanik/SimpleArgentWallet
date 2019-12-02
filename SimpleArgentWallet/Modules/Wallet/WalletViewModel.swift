@@ -122,8 +122,9 @@ class ArgentWallet: Automata<Modules.Wallet.State, Modules.Wallet.State.Events> 
             ArgentWallet.passthroughMiddleware(),
 
             ArgentWallet.makeMiddleware(when: { (event) -> Ethereum.Wallet? in
-                if case .fetchedWallet(let wallet) = event { return wallet } else { return nil } },
-                                        then: { (_, wallet) -> Observable<Modules.Wallet.State.Events> in
+                guard case let .fetchedWallet(wallet) = event else { return nil }; return wallet }
+            ) { (wallet) -> Observable<Modules.Wallet.State.Events> in
+
                 let balance = balanceInfo
                     .fetch(for: wallet.address)
                     .map {
@@ -134,17 +135,17 @@ class ArgentWallet: Automata<Modules.Wallet.State, Modules.Wallet.State.Events> 
                         Modules.Wallet.State.Events.fetchedPrice($0) }
 
                 return Observable.merge(balance, price)
-            })
+            }
         ])
 
         let request = ArgentWallet.makeRequest(when: { (state) -> Bool? in
-            if case .initial = state { return true } else { return nil } },
-                                              then: { (_, _) -> Observable<Modules.Wallet.State.Events> in
-                                                return walletInfo
-                                                    .fetch()
-                                                    .map {
-                                                        Modules.Wallet.State.Events.fetchedWallet($0) }
-        })
+            guard case .initial = state else { return nil }; return true }
+        ) { (_) -> Observable<Modules.Wallet.State.Events> in
+            return walletInfo
+                .fetch()
+                .map {
+                    Modules.Wallet.State.Events.fetchedWallet($0) }
+        }
 
         self.init(
             middleware: middleware,
@@ -193,7 +194,8 @@ extension ArgentWallet: WalletViewModel {
         }
 
         func buildModel(from context: Modules.Wallet.State.Context) -> Modules.Wallet.DisplayModel {
-            let accountModel = Modules.Wallet.AccountCardModel(name: context.wallet?.address.hexString ?? "-",
+            let accountModel = Modules.Wallet.AccountCardModel(imageSeed: context.wallet?.address.hexString ?? "",
+                                                               name: context.wallet?.address.hexString ?? "-",
                                                                balance: format(convertToETH(balance: context.balance), rate: 1.0, symbol: "ETH"),
                                                                value: format(convertToETH(balance: context.balance), rate: context.price, symbol: "USD"))
             let model = Modules.Wallet.DisplayModel(account: accountModel)

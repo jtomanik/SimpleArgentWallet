@@ -9,10 +9,12 @@
 import Foundation
 import RxSwift
 import CardParts
+import BlockiesSwift
 
 extension Modules.Wallet {
 
     struct AccountCardModel {
+        let imageSeed: String?
         let name: String
         let balance: String
         let value: String
@@ -74,25 +76,37 @@ extension ArgentAccountCardController {
         var parts: [CardPartView] = []
 
         let headerView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .right)
-        headerView.leftTitleText = "Wallet Balance"
+        headerView.leftTitleText = "Argent Wallet"
         headerView.leftTitleFont = theme.headerTextFont
         parts.append(headerView)
 
-        let accountLabelView = CardPartTextView(type: .normal)
-        accountLabelView.text = model.name
-        parts.append(accountLabelView)
+        if let seed = model.imageSeed {
+            let blockies = Blockies(seed: seed)
+
+            let accountView = CardPartIconLabel()
+            accountView.verticalPadding = 10
+            accountView.padding = 0
+            accountView.text = model.name
+            accountView.textAlignment = .left
+            accountView.font = theme.smallTextFont
+            accountView.numberOfLines = 0
+            accountView.iconPadding = 5
+            accountView.icon = blockies.createImage()
+            accountView.iconPosition = ( .left, .center )
+            parts.append(accountView)
+        }
 
         let ethBalanceView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
-        ethBalanceView.leftTitleText = model.balance
+        ethBalanceView.leftTitleText = "balance"
         ethBalanceView.leftTitleFont = theme.titleFont
-        ethBalanceView.rightTitleText = "ETH"
+        ethBalanceView.rightTitleText = model.balance
         ethBalanceView.rightTitleFont = theme.titleFont
         parts.append(ethBalanceView)
 
         let usdBalanceView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
-        usdBalanceView.leftTitleText = model.value
+        usdBalanceView.leftTitleText = "value"
         usdBalanceView.leftTitleFont = theme.normalTextFont
-        usdBalanceView.rightTitleText = "USD"
+        usdBalanceView.rightTitleText = model.value
         usdBalanceView.rightTitleFont = theme.normalTextFont
         parts.append(usdBalanceView)
 
