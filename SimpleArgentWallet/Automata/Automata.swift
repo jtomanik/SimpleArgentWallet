@@ -218,21 +218,39 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
 }
 
 
+//MARK: Middleware helpers
 extension Automata {
 
-    typealias EventFilter<P> = (Controller.State.Events) -> P?
-    typealias MiddlewareClosure<P> = (Controller.State.Events, P) -> Observable<Controller.State.Events>
-    typealias StateFilter<P> = (Controller.State) -> P?
-    typealias RequestClosure<P> = (Controller.State, P) -> Observable<Controller.State.Events>
+    typealias EventFilter<P>                            = (Controller.State.Events) -> P?
+    typealias MiddlewareClosure<P>                      = (Controller.State.Events, P) -> Observable<Controller.State.Events>
+    typealias SimpleMiddlewareClosure<P>                = (P) -> Observable<Controller.State.Events>
+    typealias MiddlewareFunction<P>                     = (Controller.State.Events, P) -> Controller.State.Events?
+    typealias SimpleMiddlewareFunction<P>               = (P) -> Controller.State.Events?
+    typealias NonOptionalMiddlewareFunction<P>          = (Controller.State.Events, P) -> Controller.State.Events
+    typealias SimpleNonOptionalMiddlewareFunction<P>    = (P) -> Controller.State.Events
 
-    static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping ((T) -> (Controller.State.Events?))) -> Middleware {
-        let closure: MiddlewareClosure<T> = { (event, value) -> Observable<Controller.State.Events> in
-            guard let e = execute(value) else {
-                return Observable.just(event)
-            }
-            return Observable.just(e)
-        }
-        return makeMiddleware(predicate: filter, closure)
+    static func passthroughMiddleware() -> Middleware {
+        return { event in return Observable.just(event) }
+    }
+
+    static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping SimpleNonOptionalMiddlewareFunction<T>) -> Middleware {
+        let callback = convertMiddleware(function: expandMiddleware(function: execute))
+        return makeMiddleware(predicate: filter, callback)
+    }
+
+    static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping NonOptionalMiddlewareFunction<T>) -> Middleware {
+        let callback = convertMiddleware(function: execute)
+        return makeMiddleware(predicate: filter, callback)
+    }
+
+    static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping SimpleMiddlewareFunction<T>) -> Middleware {
+        let callback = convertMiddleware(function: expandMiddleware(function: execute))
+        return makeMiddleware(predicate: filter, callback)
+    }
+
+    static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping SimpleMiddlewareClosure<T>) -> Middleware {
+        let callback = expandMiddleware(closure: execute)
+        return makeMiddleware(predicate: filter, callback)
     }
 
     static func makeMiddleware<T>(when filter: @escaping EventFilter<T>, then execute: @escaping MiddlewareClosure<T>) -> Middleware {
@@ -265,10 +283,6 @@ extension Automata {
         }
     }
 
-    static func passthroughMiddleware() -> Middleware {
-        return { event in return Observable.just(event) }
-    }
-
     private static func sanitize(middlewares array: [Middleware]) -> [Middleware] {
         guard !array.isEmpty else {
             return [Automata.passthroughMiddleware()]
@@ -277,14 +291,74 @@ extension Automata {
         return array
     }
 
-    static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping ((T) -> (Controller.State.Events?))) -> Request {
-        let closure: RequestClosure<T> = { (state, value) -> Observable<Controller.State.Events> in
-            guard let e = execute(value) else {
+    private static func convertMiddleware<T>(function: @escaping NonOptionalMiddlewareFunction<T>) -> MiddlewareClosure<T> {
+        let converted: MiddlewareFunction<T> = { (event, value) -> Controller.State.Events? in
+            return Optional.some(function(event, value))
+        }
+        return convertMiddleware(function: converted)
+    }
+
+    private static func convertMiddleware<T>(function: @escaping MiddlewareFunction<T>) -> MiddlewareClosure<T> {
+        return { (event, value) -> Observable<Controller.State.Events> in
+            guard let e = function(event, value) else {
                 return Observable.empty()
             }
             return Observable.just(e)
         }
-        return makeRequest(predicate: filter, closure)
+    }
+
+    private static func expandMiddleware<T>(closure: @escaping SimpleMiddlewareClosure<T>) -> MiddlewareClosure<T> {
+        return {(event, value) -> Observable<Controller.State.Events> in
+            return closure(value)
+        }
+    }
+
+    private static func expandMiddleware<T>(function: @escaping SimpleMiddlewareFunction<T>) -> MiddlewareFunction<T> {
+        return {(event, value) -> Controller.State.Events? in
+            return function(value)
+        }
+    }
+
+    private static func expandMiddleware<T>(function: @escaping SimpleNonOptionalMiddlewareFunction<T>) -> NonOptionalMiddlewareFunction<T> {
+        return {(event, value) -> Controller.State.Events in
+            return function(value)
+        }
+    }
+}
+
+//MARK: Request helpers
+extension Automata {
+
+    typealias StateFilter<P>                        = (Controller.State) -> P?
+    typealias RequestClosure<P>                     = (Controller.State, P) -> Observable<Controller.State.Events>
+    typealias SimpleRequestClosure<P>               = (P) -> Observable<Controller.State.Events>
+    typealias RequestFunction<P>                    = (Controller.State, P) -> Controller.State.Events?
+    typealias SimpleRequestFunction<P>              = (P) -> Controller.State.Events?
+    typealias NonOptionalRequestFunction<P>         = (Controller.State, P) -> Controller.State.Events
+    typealias SimpleNonOptionalRequestFunction<P>   = (P) -> Controller.State.Events
+
+    static func passthroughRequest() -> Request {
+        return { _ in return Observable.empty() }
+    }
+
+    static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping SimpleNonOptionalRequestFunction<T>) -> Request {
+        let callback = convertRequest(function: expandRequest(function: execute))
+        return makeRequest(predicate: filter, callback)
+    }
+
+    static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping NonOptionalRequestFunction<T>) -> Request {
+        let callback = convertRequest(function: execute)
+        return makeRequest(predicate: filter, callback)
+    }
+
+    static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping SimpleRequestFunction<T>) -> Request {
+        let callback = convertRequest(function: expandRequest(function: execute))
+        return makeRequest(predicate: filter, callback)
+    }
+
+    static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping SimpleRequestClosure<T>) -> Request {
+        let callback = expandRequest(closure: execute)
+        return makeRequest(predicate: filter, callback)
     }
 
     static func makeRequest<T>(when filter: @escaping StateFilter<T>, then execute: @escaping RequestClosure<T>) -> Request {
@@ -309,10 +383,6 @@ extension Automata {
         }
     }
 
-    static func passthroughRequest() -> Request {
-        return { _ in return Observable.empty() }
-    }
-
     private static func sanitize(requests array: [Request]) -> [Request] {
         guard !array.isEmpty else {
             return [Automata.passthroughRequest()]
@@ -320,5 +390,38 @@ extension Automata {
 
         return array
     }
-}
 
+    private static func convertRequest<T>(function: @escaping NonOptionalRequestFunction<T>) -> RequestClosure<T> {
+        let converted: RequestFunction<T> = { (state, value) -> Controller.State.Events? in
+            return Optional.some(function(state, value))
+        }
+        return convertRequest(function: converted)
+    }
+
+    private static func convertRequest<T>(function: @escaping RequestFunction<T>) -> RequestClosure<T> {
+        return { (state, value) -> Observable<Controller.State.Events> in
+            guard let e = function(state, value) else {
+                return Observable.empty()
+            }
+            return Observable.just(e)
+        }
+    }
+
+    private static func expandRequest<T>(closure: @escaping SimpleRequestClosure<T>) -> RequestClosure<T> {
+        return {(state, value) -> Observable<Controller.State.Events> in
+            return closure(value)
+        }
+    }
+
+    private static func expandRequest<T>(function: @escaping SimpleRequestFunction<T>) -> RequestFunction<T> {
+        return {(state, value) -> Controller.State.Events? in
+            return function(value)
+        }
+    }
+
+    private static func expandRequest<T>(function: @escaping SimpleNonOptionalRequestFunction<T>) -> NonOptionalRequestFunction<T> {
+        return {(state, value) -> Controller.State.Events in
+            return function(value)
+        }
+    }
+}
