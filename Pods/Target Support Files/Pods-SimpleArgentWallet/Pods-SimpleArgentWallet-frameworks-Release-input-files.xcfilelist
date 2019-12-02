@@ -1,5 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-SimpleArgentWallet/Pods-SimpleArgentWallet-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework
+${BUILT_PRODUCTS_DIR}/BlockiesSwift/BlockiesSwift.framework
 ${BUILT_PRODUCTS_DIR}/CardParts/CardParts.framework
 ${BUILT_PRODUCTS_DIR}/Cartography/Cartography.framework
 ${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework

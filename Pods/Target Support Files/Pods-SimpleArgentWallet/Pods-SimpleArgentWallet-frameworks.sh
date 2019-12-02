@@ -162,6 +162,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/BlockiesSwift/BlockiesSwift.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CardParts/CardParts.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Cartography/Cartography.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework"
@@ -177,6 +178,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/BlockiesSwift/BlockiesSwift.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CardParts/CardParts.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Cartography/Cartography.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework"

@@ -16,6 +16,7 @@ target 'SimpleArgentWallet' do
     pod 'CardParts'
     pod 'Cartography'
     pod 'SwiftEntryKit'
+    pod 'BlockiesSwift'
 end
 
 target 'SimpleArgentWalletTests' do

@@ -1,5 +1,6 @@
 PODS:
   - BigInt (5.0.0)
+  - BlockiesSwift (0.1.2)
   - CardParts (2.21.0):
     - RxCocoa (~> 4.5)
     - RxDataSources (~> 3.1)
@@ -40,6 +41,7 @@ PODS:
     - BigInt (~> 5.0.0)
 
 DEPENDENCIES:
+  - BlockiesSwift
   - CardParts
   - Cartography
   - Nimble
@@ -56,6 +58,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - BigInt
+    - BlockiesSwift
     - CardParts
     - Cartography
     - Differentiator
@@ -75,6 +78,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   BigInt: 74b4d88367b0e819d9f77393549226d36faeb0d8
+  BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CardParts: dd1e44302132d0a9922157a9c74e936431ba3454
   Cartography: c5626d29056b20f1e95c017326ee4df57cc39ad8
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
@@ -92,6 +96,6 @@ SPEC CHECKSUMS:
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   web3.swift: 8fe8bd96a6170851eaefc36eb94298d35d471079
 
-PODFILE CHECKSUM: 8b1f2ba9a3a5a409c1151db09535cffa5d7eac9b
+PODFILE CHECKSUM: cccbae9c739d372a0ff4a482a6caf251fe0ff43d
 
 COCOAPODS: 1.8.4
