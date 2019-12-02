@@ -51,7 +51,6 @@ extension Modules.Lock {
             case reset
             case pinValid
             case pinInvalid
-    //        case biometrics
         }
     }
 }
@@ -104,32 +103,26 @@ extension Modules.Lock.State.Events: InterpretableCommand {
 class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
 
     convenience init(validator: PinValidation) {
-        self.init(
-            middleware: PinLock.middlewarePinValidation(with: validator),
-            request: PinLock.requestPinValidation(digits: Statechart.pinLength))
-    }
 
-    //TODO: use makeMiddleware
-    static func middlewarePinValidation(with validator: PinValidation) -> Middleware {
-        return { event -> Observable<Statechart.Events> in
-            guard case let .validating(input) = event else {
-                return Observable.just(event)
-            }
+        let middleware = PinLock.makeMiddleware(when: { (event) -> [Int]? in
+            guard case let .validating(input) = event else { return nil }; return input }
+        ) { (input) -> Observable<Modules.Lock.State.Events> in
+
             return validator
                 .validate(pin: input)
                 .map { return $0 ? Statechart.Events.pinValid : Statechart.Events.pinInvalid }
         }
-    }
 
-    //TODO: Use makeRequest
-    static func requestPinValidation(digits: Int) -> Request {
-        return { state -> Observable<Statechart.Events> in
-            guard case let .pin(input) = state,
-                input.count == digits else {
-                return Observable.empty()
-            }
-            return Observable.just(Statechart.Events.validating(input))
+        let request = PinLock.makeRequest(when: { (state) -> [Int]? in
+            guard case let .pin(input) = state, input.count == Statechart.pinLength else { return nil }; return input }
+        ) { (input) -> Modules.Lock.State.Events in
+                
+            return Modules.Lock.State.Events.validating(input)
         }
+
+        self.init(
+            middleware: middleware,
+            request: request)
     }
 }
 

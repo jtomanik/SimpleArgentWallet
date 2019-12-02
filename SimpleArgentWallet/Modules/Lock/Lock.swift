@@ -21,7 +21,7 @@ extension Modules {
 extension Modules.Lock {
 
     static func make() -> UIViewController {
-        let vm = PinLock(validator: PinValidator())
+        let vm = PinLock(validator: container.resolver.fetch(PinValidation.self))
         let vc = LockViewController(viewModel: vm)
 
         vc.viewModel.route
@@ -36,5 +36,8 @@ extension Modules.Lock {
 extension Modules.Lock: Assembly {
 
     func assemble(container: Container) {
+        container.register(PinValidation.self) { _ in
+            PinValidator()
+        }.inObjectScope(.container)
     }
 }
