@@ -81,9 +81,6 @@ public protocol ReactiveStateController {
     associatedtype Statechart: StatechartType
     associatedtype Commands: InterpretableCommand
 
-    typealias Middleware = (Statechart.Events) -> Observable<Statechart.Events>
-    typealias Request = (Statechart) -> Observable<Statechart.Events>
-
     var commands: PublishSubject<Commands> { get }
     var output: Observable<Statechart.Actions> { get }
 
@@ -144,23 +141,23 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
     public let events: PublishSubject<Statechart.State.Events>
     private let state: BehaviorSubject<Controller>
 
-    private let middleware: Middleware
-    private let request: Request
+    private let middleware: Statechart.Middleware
+    private let request: Statechart.Request
     private let backgroundScheduler = SerialDispatchQueueScheduler(qos: .default)
 
     private let disposeBag = DisposeBag()
 
     public init(
         stateController: GenericStatechart<Statechart>,
-        middleware: Middleware? = nil,
-        request: Request? = nil) {
+        middleware: Statechart.Middleware? = nil,
+        request: Statechart.Request? = nil) {
 
         self.state = BehaviorSubject(value: stateController)
         self.commands = PublishSubject()
         self.events = PublishSubject()
 
-        self.middleware = middleware ?? Automata.passthroughMiddleware()
-        self.request = request ?? Automata.passthroughRequest()
+        self.middleware = middleware ?? Statechart.passthroughMiddleware()
+        self.request = request ?? Statechart.passthroughRequest()
 
         commands
             .asObservable()
@@ -209,7 +206,7 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
         request: nil)
     }
 
-    convenience init(middleware: Middleware?, request: Request?) {
+    convenience init(middleware: Statechart.Middleware?, request: Statechart.Request?) {
         self.init(
         stateController: GenericStatechart<Statechart>(),
         middleware: middleware,
@@ -219,15 +216,18 @@ public class Automata<Statechart: StatechartType, Commands: InterpretableCommand
 
 
 //MARK: Middleware helpers
-extension Automata {
+extension StatechartType {
 
-    typealias EventFilter<P>                            = (Controller.State.Events) -> P?
-    typealias MiddlewareClosure<P>                      = (Controller.State.Events, P) -> Observable<Controller.State.Events>
-    typealias SimpleMiddlewareClosure<P>                = (P) -> Observable<Controller.State.Events>
-    typealias MiddlewareFunction<P>                     = (Controller.State.Events, P) -> Controller.State.Events?
-    typealias SimpleMiddlewareFunction<P>               = (P) -> Controller.State.Events?
-    typealias NonOptionalMiddlewareFunction<P>          = (Controller.State.Events, P) -> Controller.State.Events
-    typealias SimpleNonOptionalMiddlewareFunction<P>    = (P) -> Controller.State.Events
+    public typealias Middleware = (State.Events) -> Observable<State.Events>
+    public typealias Request = (State) -> Observable<State.Events>
+
+    typealias EventFilter<P>                            = (State.Events) -> P?
+    typealias MiddlewareClosure<P>                      = (State.Events, P) -> Observable<State.Events>
+    typealias SimpleMiddlewareClosure<P>                = (P) -> Observable<State.Events>
+    typealias MiddlewareFunction<P>                     = (State.Events, P) -> State.Events?
+    typealias SimpleMiddlewareFunction<P>               = (P) -> State.Events?
+    typealias NonOptionalMiddlewareFunction<P>          = (State.Events, P) -> State.Events
+    typealias SimpleNonOptionalMiddlewareFunction<P>    = (P) -> State.Events
 
     static func passthroughMiddleware() -> Middleware {
         return { event in return Observable.just(event) }
@@ -258,7 +258,7 @@ extension Automata {
     }
 
     static func makeMiddleware<T>(predicate filter: @escaping EventFilter<T>, _ execute: @escaping MiddlewareClosure<T>) -> Middleware {
-        return { event -> Observable<Controller.State.Events> in
+        return { event -> Observable<State.Events> in
             guard let p = filter(event) else {
                 return Observable.just(event)
             }
@@ -267,16 +267,16 @@ extension Automata {
     }
 
     static func serialMiddlewares(from input: [Middleware]) -> Middleware {
-        return { event -> Observable<Controller.State.Events> in
-            return input.reduce(Observable.just(event)) { (acc, middleware) -> Observable<Controller.State.Events> in
+        return { event -> Observable<State.Events> in
+            return input.reduce(Observable.just(event)) { (acc, middleware) -> Observable<State.Events> in
                 return acc.flatMap(middleware)
             }
         }
     }
 
     static func parallelMiddlewares(from input: [Middleware]) -> Middleware {
-        return { event -> Observable<Controller.State.Events> in
-            let sanitized = Automata.sanitize(middlewares: input)
+        return { event -> Observable<State.Events> in
+            let sanitized = Self.sanitize(middlewares: input)
             return Observable.from(sanitized)
                 .map { $0(event) }
                 .merge()
@@ -285,21 +285,21 @@ extension Automata {
 
     private static func sanitize(middlewares array: [Middleware]) -> [Middleware] {
         guard !array.isEmpty else {
-            return [Automata.passthroughMiddleware()]
+            return [Self.passthroughMiddleware()]
         }
 
         return array
     }
 
     private static func convertMiddleware<T>(function: @escaping NonOptionalMiddlewareFunction<T>) -> MiddlewareClosure<T> {
-        let converted: MiddlewareFunction<T> = { (event, value) -> Controller.State.Events? in
+        let converted: MiddlewareFunction<T> = { (event, value) -> State.Events? in
             return Optional.some(function(event, value))
         }
         return convertMiddleware(function: converted)
     }
 
     private static func convertMiddleware<T>(function: @escaping MiddlewareFunction<T>) -> MiddlewareClosure<T> {
-        return { (event, value) -> Observable<Controller.State.Events> in
+        return { (event, value) -> Observable<State.Events> in
             guard let e = function(event, value) else {
                 return Observable.empty()
             }
@@ -308,34 +308,34 @@ extension Automata {
     }
 
     private static func expandMiddleware<T>(closure: @escaping SimpleMiddlewareClosure<T>) -> MiddlewareClosure<T> {
-        return {(event, value) -> Observable<Controller.State.Events> in
+        return {(event, value) -> Observable<State.Events> in
             return closure(value)
         }
     }
 
     private static func expandMiddleware<T>(function: @escaping SimpleMiddlewareFunction<T>) -> MiddlewareFunction<T> {
-        return {(event, value) -> Controller.State.Events? in
+        return {(event, value) -> State.Events? in
             return function(value)
         }
     }
 
     private static func expandMiddleware<T>(function: @escaping SimpleNonOptionalMiddlewareFunction<T>) -> NonOptionalMiddlewareFunction<T> {
-        return {(event, value) -> Controller.State.Events in
+        return {(event, value) -> State.Events in
             return function(value)
         }
     }
 }
 
 //MARK: Request helpers
-extension Automata {
+extension StatechartType {
 
-    typealias StateFilter<P>                        = (Controller.State) -> P?
-    typealias RequestClosure<P>                     = (Controller.State, P) -> Observable<Controller.State.Events>
-    typealias SimpleRequestClosure<P>               = (P) -> Observable<Controller.State.Events>
-    typealias RequestFunction<P>                    = (Controller.State, P) -> Controller.State.Events?
-    typealias SimpleRequestFunction<P>              = (P) -> Controller.State.Events?
-    typealias NonOptionalRequestFunction<P>         = (Controller.State, P) -> Controller.State.Events
-    typealias SimpleNonOptionalRequestFunction<P>   = (P) -> Controller.State.Events
+    typealias StateFilter<P>                        = (State) -> P?
+    typealias RequestClosure<P>                     = (State, P) -> Observable<State.Events>
+    typealias SimpleRequestClosure<P>               = (P) -> Observable<State.Events>
+    typealias RequestFunction<P>                    = (State, P) -> State.Events?
+    typealias SimpleRequestFunction<P>              = (P) -> State.Events?
+    typealias NonOptionalRequestFunction<P>         = (State, P) -> State.Events
+    typealias SimpleNonOptionalRequestFunction<P>   = (P) -> State.Events
 
     static func passthroughRequest() -> Request {
         return { _ in return Observable.empty() }
@@ -366,7 +366,7 @@ extension Automata {
     }
 
     static func makeRequest<T>(predicate filter: @escaping StateFilter<T>, _ execute: @escaping RequestClosure<T>) -> Request {
-        return { state -> Observable<Controller.State.Events> in
+        return { state -> Observable<State.Events> in
             guard let p = filter(state) else {
                 return Observable.empty()
             }
@@ -375,8 +375,8 @@ extension Automata {
     }
 
     static func requests(from input: [Request]) -> Request {
-        return { state -> Observable<Controller.State.Events> in
-            let sanitized = Automata.sanitize(requests: input)
+        return { state -> Observable<State.Events> in
+            let sanitized = Self.sanitize(requests: input)
             return Observable.from(sanitized)
                 .map { $0(state) }
                 .merge()
@@ -385,21 +385,21 @@ extension Automata {
 
     private static func sanitize(requests array: [Request]) -> [Request] {
         guard !array.isEmpty else {
-            return [Automata.passthroughRequest()]
+            return [Self.passthroughRequest()]
         }
 
         return array
     }
 
     private static func convertRequest<T>(function: @escaping NonOptionalRequestFunction<T>) -> RequestClosure<T> {
-        let converted: RequestFunction<T> = { (state, value) -> Controller.State.Events? in
+        let converted: RequestFunction<T> = { (state, value) -> State.Events? in
             return Optional.some(function(state, value))
         }
         return convertRequest(function: converted)
     }
 
     private static func convertRequest<T>(function: @escaping RequestFunction<T>) -> RequestClosure<T> {
-        return { (state, value) -> Observable<Controller.State.Events> in
+        return { (state, value) -> Observable<State.Events> in
             guard let e = function(state, value) else {
                 return Observable.empty()
             }
@@ -408,19 +408,19 @@ extension Automata {
     }
 
     private static func expandRequest<T>(closure: @escaping SimpleRequestClosure<T>) -> RequestClosure<T> {
-        return {(state, value) -> Observable<Controller.State.Events> in
+        return {(state, value) -> Observable<State.Events> in
             return closure(value)
         }
     }
 
     private static func expandRequest<T>(function: @escaping SimpleRequestFunction<T>) -> RequestFunction<T> {
-        return {(state, value) -> Controller.State.Events? in
+        return {(state, value) -> State.Events? in
             return function(value)
         }
     }
 
     private static func expandRequest<T>(function: @escaping SimpleNonOptionalRequestFunction<T>) -> NonOptionalRequestFunction<T> {
-        return {(state, value) -> Controller.State.Events in
+        return {(state, value) -> State.Events in
             return function(value)
         }
     }

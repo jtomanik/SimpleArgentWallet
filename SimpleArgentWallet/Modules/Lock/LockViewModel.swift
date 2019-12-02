@@ -104,7 +104,7 @@ class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
 
     convenience init(validator: PinValidation) {
 
-        let middleware = PinLock.makeMiddleware(when: { (event) -> [Int]? in
+        let middleware = Statechart.makeMiddleware(when: { (event) -> [Int]? in
             guard case let .validating(input) = event else { return nil }; return input }
         ) { (input) -> Observable<Modules.Lock.State.Events> in
 
@@ -113,7 +113,7 @@ class PinLock: Automata<Modules.Lock.State, Modules.Lock.State.Events> {
                 .map { return $0 ? Statechart.Events.pinValid : Statechart.Events.pinInvalid }
         }
 
-        let request = PinLock.makeRequest(when: { (state) -> [Int]? in
+        let request = Statechart.makeRequest(when: { (state) -> [Int]? in
             guard case let .pin(input) = state, input.count == Statechart.pinLength else { return nil }; return input }
         ) { (input) -> Modules.Lock.State.Events in
                 
