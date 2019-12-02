@@ -14,63 +14,23 @@ protocol WalletViewModel {
     var displayModel: Observable<Modules.Wallet.DisplayModel> { get }
 }
 
-protocol WalletProvider: class {
-    func fetch() -> Observable<Ethereum.Wallet>
-}
-
-protocol PriceFeedProvider: class {
-    func fetch() -> Observable<Double>
-}
-protocol BalanceInformationProvider: class {
-    func fetch(for address: Ethereum.Address) -> Observable<BigUInt>
-}
-
 extension Modules.Wallet {
 
-    enum State: FiniteStateType {
+    struct State: FiniteStateType {
 
         static var initialState: State {
-            return .initial
+            return State(account: Account.State.initialState,
+                         transfers: ERC20.State.initialState)
         }
 
-        case initial
-        case loading(Context)
-        case loaded(Context)
+        let account: Account.State
+        let transfers: ERC20.State
 
         enum Events {
-            case load
-            case fetchedWallet(Ethereum.Wallet)
-            case fetchedBalance(BigUInt)
-            case fetchedPrice(Double)
+            case account(Account.State.Events)
+            case erc20(ERC20.State.Events)
             case error
         }
-
-        struct Context: Equatable {
-            let wallet: Ethereum.Wallet?
-            let balance: BigUInt?
-            let price: Double?
-        }
-    }
-}
-
-extension Modules.Wallet.State.Context {
-
-    init() {
-        wallet = nil
-        balance = nil
-        price = nil
-    }
-
-    func with(wallet: Ethereum.Wallet) -> Modules.Wallet.State.Context {
-        return Modules.Wallet.State.Context(wallet: wallet, balance: self.balance, price: self.price)
-    }
-
-    func with(balance: BigUInt) -> Modules.Wallet.State.Context {
-        return Modules.Wallet.State.Context(wallet: self.wallet, balance: balance, price: self.price)
-    }
-
-    func with(price: Double) -> Modules.Wallet.State.Context {
-        return Modules.Wallet.State.Context(wallet: self.wallet, balance: self.balance, price: price)
     }
 }
 
@@ -78,25 +38,11 @@ extension Modules.Wallet.State: ReducableState {
     typealias State = Modules.Wallet.State
 
     static func reduce(_ state: State, _ event: State.Events) -> State {
-
-        func hasFinishedLoading(with context: Context) -> State {
-            guard let _ = context.wallet,
-                let _ = context.balance,
-                let _ = context.price else {
-                    return .loading(context)
-            }
-
-            return .loaded(context)
-        }
-
-        switch (state, event) {
-        case (.initial, .fetchedWallet(let wallet)):
-            let context = Modules.Wallet.State.Context().with(wallet: wallet)
-            return .loading(context)
-        case (.loading(let context), .fetchedPrice(let price)):
-            return hasFinishedLoading(with: context.with(price: price))
-        case (.loading(let context), .fetchedBalance(let balance)):
-            return hasFinishedLoading(with: context.with(balance: balance))
+        switch (event) {
+        case let .account(unwrapped):
+            let newAccount = Modules.Wallet.Account.State.reduce(state.account, unwrapped)
+            return State(account: newAccount,
+                         transfers: state.transfers)
         default:
             return state
         }
@@ -118,33 +64,19 @@ class ArgentWallet: Automata<Modules.Wallet.State, Modules.Wallet.State.Events> 
          priceFeed: PriceFeedProvider
     ) {
 
-        let middleware = ArgentWallet.parallelMiddlewares(from: [
-            ArgentWallet.passthroughMiddleware(),
+        let accountMiddleware = Modules.Wallet.Account.State.makeMiddleware(balanceInfo: balanceInfo, priceFeed: priceFeed)
+        let accountRequest = Modules.Wallet.Account.State.makeRequest(walletInfo: walletInfo)
 
-            ArgentWallet.makeMiddleware(when: { (event) -> Ethereum.Wallet? in
-                guard case let .fetchedWallet(wallet) = event else { return nil }; return wallet }
-            ) { (wallet) -> Observable<Modules.Wallet.State.Events> in
+        let middleware = Modules.Wallet.State.parallelMiddlewares(from: [
 
-                let balance = balanceInfo
-                    .fetch(for: wallet.address)
-                    .map {
-                        Modules.Wallet.State.Events.fetchedBalance($0) }
-                let price = priceFeed
-                    .fetch()
-                    .map {
-                        Modules.Wallet.State.Events.fetchedPrice($0) }
-
-                return Observable.merge(balance, price)
+            Modules.Wallet.State.makeMiddleware(when: { (event) -> Modules.Wallet.Account.State.Events? in
+                guard case let .account(unwrapped) = event else { return nil }; return unwrapped }) { event in
+                    return accountMiddleware(event).map { Modules.Wallet.State.Events.account($0) }
             }
-        ])
+            ])
 
-        let request = ArgentWallet.makeRequest(when: { (state) -> Bool? in
-            guard case .initial = state else { return nil }; return true }
-        ) { (_) -> Observable<Modules.Wallet.State.Events> in
-            return walletInfo
-                .fetch()
-                .map {
-                    Modules.Wallet.State.Events.fetchedWallet($0) }
+        let request = Modules.Wallet.State.makeRequest(when: { return $0.account }) { state in
+            return accountRequest(state).map { Modules.Wallet.State.Events.account($0) }
         }
 
         self.init(
@@ -158,11 +90,11 @@ extension ArgentWallet: WalletViewModel {
     var displayModel: Observable<Modules.Wallet.DisplayModel> {
         return self.output
             .asObservable()
-            .map { ArgentWallet.transform($0) }
+            .map { ArgentWallet.transform($0.account) }
             .filterNil()
     }
 
-    private static func transform(_ state: Statechart) -> Modules.Wallet.DisplayModel? {
+    private static func transform(_ state: Modules.Wallet.Account.State) -> Modules.Wallet.DisplayModel? {
 
         func convertToETH(balance: BigUInt?) -> Double? {
             guard let balance = balance else {
@@ -193,7 +125,7 @@ extension ArgentWallet: WalletViewModel {
             return "\(format(Double(value * rate))) \(symbol)"
         }
 
-        func buildModel(from context: Modules.Wallet.State.Context) -> Modules.Wallet.DisplayModel {
+        func buildModel(from context: Modules.Wallet.Account.State.Context) -> Modules.Wallet.DisplayModel {
             let accountModel = Modules.Wallet.AccountCardModel(imageSeed: context.wallet?.address.hexString ?? "",
                                                                name: context.wallet?.address.hexString ?? "-",
                                                                balance: format(convertToETH(balance: context.balance), rate: 1.0, symbol: "ETH"),
@@ -210,8 +142,5 @@ extension ArgentWallet: WalletViewModel {
         default:
             return nil
         }
-
-
     }
-
 }
