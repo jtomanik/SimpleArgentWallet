@@ -44,7 +44,7 @@ class BalanceInformation: BaseEthereumRequest, BalanceInformationProvider {
     }
 }
 
-class ERC20NameInformation: BaseEthereumRequest {
+class ERC20NameInformation: BaseEthereumRequest, ERC20NameProvider {
 
     func fetch(for contract: Ethereum.Address) -> Observable<String> {
         return Observable<String>.create { [requester] observer -> Disposable in
@@ -64,7 +64,7 @@ class ERC20NameInformation: BaseEthereumRequest {
     }
 }
 
-class ERC20SymbolInformation: BaseEthereumRequest {
+class ERC20SymbolInformation: BaseEthereumRequest, ERC20SymbolProvider {
 
     func fetch(for contract: Ethereum.Address) -> Observable<String> {
         return Observable<String>.create { [requester] observer -> Disposable in
@@ -84,7 +84,7 @@ class ERC20SymbolInformation: BaseEthereumRequest {
     }
 }
 
-class ERC20TransferInformation: BaseEthereumRequest {
+class ERC20TransferInformation: BaseEthereumRequest, ERC20TransferProvider {
 
     func fetch(for address: Ethereum.Address) -> Observable<[Ethereum.Transaction]> {
         return Observable<[Ethereum.Transaction]>.create { [requester] observer -> Disposable in

@@ -41,6 +41,7 @@ extension Ethereum {
     struct ERC20: Equatable {
         let contract: Address
         let name: String
+        let symbol: String
     }
 
     struct ERC20Transaction: Equatable {
