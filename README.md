@@ -12,18 +12,30 @@ This deliverable is split into independent features.
 ## The app
 A quick overview of the features
 
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic1.png)
+
 #### Show the Wallet Balance
 Apart from showing the token balance, I am also showing a wallet address together with blockly avatar for that address.
 I am also querying a current ETHUSD price an show a USD value.
 
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic0.png)
+
 #### Sending ETH
 After sending a transaction through web3.swift I'm providing a list of transaction hashes returned. 
+
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic3.png)
+
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic4.png)
 
 #### Show inbound ERC20 transfers
 The list shows transactions returned by web3.swift. For each transaction, I'm showing a "from" address a transaction value as well as token's symbol.
 
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic2.png)
+
 #### PIN lock screen
 Whenever the app is not active in the foreground the PIN lock screen shows up. For the moment Pin is hardcoded to `1234`.
+
+![image](https://raw.githubusercontent.com/jtomanik/SimpleArgentWallet/master/pic5.png)
 
 ### Architectural approach
 I wanted to present some advantages that architectures based on the State machines, Unidirectional dataflows, Redux and similar posses. This is heavily inspired by the following repos:
