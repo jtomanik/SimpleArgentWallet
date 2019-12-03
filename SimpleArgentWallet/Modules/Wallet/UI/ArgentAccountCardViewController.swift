@@ -44,6 +44,8 @@ class ArgentAccountCardController: CardPartsViewController {
     weak var viewModel: WalletViewModel!
     let disposeBag = DisposeBag()
 
+    fileprivate let theme = WalletTheme()
+
     init(viewModel: WalletViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -63,7 +65,7 @@ class ArgentAccountCardController: CardPartsViewController {
 
     func setupView() {
         let newState: CardState = .loading
-        setupCardParts(ArgentAccountCardController.makeCardTitle(), forState: newState)
+        setupCardParts(makeCardTitle(), forState: newState)
         state = .loading
         invalidateLayout()
     }
@@ -72,6 +74,7 @@ class ArgentAccountCardController: CardPartsViewController {
         self.viewModel
             .displayModel
             .observeOn(MainScheduler.instance)
+            .distinctUntilChanged()
             .subscribeNext(weak: self, ArgentAccountCardController.update)
             .disposed(by: disposeBag)
     }
@@ -97,10 +100,14 @@ class ArgentAccountCardController: CardPartsViewController {
 
         var parts: [CardPartView] = []
 
-        parts.append(contentsOf: ArgentAccountCardController.makeCardParts(from: account))
+        parts.append(contentsOf: makeAccountCardParts(from: account))
+
+        if let transfers = displayModel.transfers {
+            parts.append(contentsOf: makeTransferCardParts(from: transfers))
+        }
 
         if let transactions = displayModel.transactions {
-            parts.append(contentsOf: ArgentAccountCardController.makeCardParts(from: transactions))
+            parts.append(contentsOf: makeTransactionsCardParts(from: transactions))
         }
 
         setupCardParts(parts, forState: newState)
@@ -111,9 +118,7 @@ class ArgentAccountCardController: CardPartsViewController {
 
 extension ArgentAccountCardController {
 
-    private static let theme = WalletTheme()
-
-    static func makeCardTitle() -> [CardPartView] {
+    private func makeCardTitle() -> [CardPartView] {
         var parts: [CardPartView] = []
 
         let headerView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .right)
@@ -124,7 +129,7 @@ extension ArgentAccountCardController {
         return parts
     }
 
-    static func makeCardParts(from model: Modules.Wallet.AccountCardModel) -> [CardPartView] {
+    private func makeAccountCardParts(from model: Modules.Wallet.AccountCardModel) -> [CardPartView] {
         var parts: [CardPartView] = []
 
         parts.append(contentsOf: makeCardTitle())
@@ -162,12 +167,76 @@ extension ArgentAccountCardController {
         return parts
     }
 
-    static func makeCardParts(from model: Modules.Wallet.TransactionsCardModel) -> [CardPartView] {
+    private func makeTransferCardParts(from model: Modules.Wallet.TransfersCardModel) -> [CardPartView] {
         var parts: [CardPartView] = []
 
-        if let transactions = model.transfers {
+        parts.append(CardPartSeparatorView())
+        if model.isSendButtonEnabled {
+              parts.append(contentsOf: makeTransferButton())
+        } else {
+            let sendingView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
+            sendingView.leftTitleText = "sending..."
+            sendingView.leftTitleFont = theme.titleFont
+            parts.append(sendingView)
+        }
+
+        let transfersParts = model.transactionHashes.flatMap { makeTransferRow(from: $0) }
+        if transfersParts.count > 0 {
+            let transactionsTitleView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
+            transactionsTitleView.leftTitleText = "Transfer hashes:"
+            transactionsTitleView.leftTitleFont = theme.normalTextFont
+            parts.append(transactionsTitleView)
+            parts.append(contentsOf: transfersParts)
+        }
+
+        return parts
+    }
+
+    private func makeTransferButton() -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        let addButtonView = CardPartButtonView()
+        addButtonView.setTitle("send eth".capitalized, for: .normal)
+        addButtonView
+            .rx
+            .tap
+            .observeOn(MainScheduler.instance)
+            .bind(onNext: { [viewModel] _ in viewModel?.tappedSendETH() })
+            .disposed(by: disposeBag)
+
+        let containerView = CardPartCenteredView(leftView: CardPartStackView(), centeredView: addButtonView, rightView: CardPartStackView())
+        parts.append(containerView)
+
+        return parts
+    }
+
+    private func makeTransferRow(from model: String) -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        let transactionView = CardPartButtonView()
+        transactionView.setTitle(model.lowercased(), for: .normal)
+        transactionView.rx
+            .tap
+            .bind(onNext: { _ in
+                UIApplication.shared.openURL(URL(string: "https://ropsten.etherscan.io/tx/\(model)")!)
+            })
+            .disposed(by: disposeBag)
+        parts.append(transactionView)
+
+        return parts
+    }
+
+    private func makeTransactionsCardParts(from model: Modules.Wallet.TransactionsCardModel) -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        if let transactions = model.transactions {
             if model.isTransactionListExpanded {
-                parts.append(contentsOf: makeTransfersList(from: transactions))
+                parts.append(CardPartSeparatorView())
+                let transactionsTitleView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
+                transactionsTitleView.leftTitleText = "ERC20 Transfers:"
+                transactionsTitleView.leftTitleFont = theme.titleFont
+                parts.append(transactionsTitleView)
+                parts.append(contentsOf: makeTransactionList(from: transactions))
             } else {
                 parts.append(CardPartSeparatorView())
                 parts.append(makeTransactionsSummary(with: transactions.count))
@@ -177,7 +246,7 @@ extension ArgentAccountCardController {
         return parts
     }
 
-    private static func makeTransactionsSummary(with count: Int) -> CardPartView {
+    private func makeTransactionsSummary(with count: Int) -> CardPartView {
         let transactionsSummaryView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
         transactionsSummaryView.leftTitleText = "ERC20 transactions:"
         transactionsSummaryView.leftTitleFont = theme.normalTextFont
@@ -186,13 +255,13 @@ extension ArgentAccountCardController {
         return transactionsSummaryView
     }
 
-    private static func makeTransfersList(from model: [Modules.Wallet.TransferCardModel]) -> [CardPartView] {
+    private func makeTransactionList(from model: [Modules.Wallet.TransactionCardModel]) -> [CardPartView] {
         var parts: [CardPartView] = []
-        model.forEach { parts.append(contentsOf: makeTransferRow(from: $0)) }
+        model.forEach { parts.append(contentsOf: makeTransactionRow(from: $0)) }
         return parts
     }
 
-    static private func makeTransferRow(from model: Modules.Wallet.TransferCardModel) -> [CardPartView] {
+    private func makeTransactionRow(from model: Modules.Wallet.TransactionCardModel) -> [CardPartView] {
         var parts: [CardPartView] = []
 
         parts.append(CardPartSeparatorView())
