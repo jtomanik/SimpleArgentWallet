@@ -63,9 +63,7 @@ extension Ethereum.Wallet {
     }
 
     var keyData: Data {
-        var data = Data.init(count: 32)
-        let test = self.privateKey.serialize()
-        return data
+        return self.privateKey.serialize()
     }
 }
 
