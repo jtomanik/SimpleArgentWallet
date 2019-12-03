@@ -10,6 +10,7 @@
 		529EFB6D58819C1340140FC5 /* Pods_SimpleArgentWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F27936C1CC20A0266621C67B /* Pods_SimpleArgentWallet.framework */; };
 		7A22426D23952B1300FFDF3D /* AccountState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A22426C23952B1300FFDF3D /* AccountState.swift */; };
 		7A22426F2395360200FFDF3D /* ERC20State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A22426E2395360200FFDF3D /* ERC20State.swift */; };
+		7A7309072396DA3A0032EF5A /* TransfersState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7309062396DA3A0032EF5A /* TransfersState.swift */; };
 		7AC34A21239699870030F43C /* Statechart+Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC34A20239699870030F43C /* Statechart+Middleware.swift */; };
 		7AC34A23239699B60030F43C /* Statechart+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC34A22239699B60030F43C /* Statechart+Request.swift */; };
 		7AFEE02E2392AF4700FAE54E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE02D2392AF4700FAE54E /* AppDelegate.swift */; };
@@ -61,6 +62,8 @@
 		4B0A498C8029B20A3DD3D5E7 /* Pods-SimpleArgentWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWalletTests/Pods-SimpleArgentWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A22426C23952B1300FFDF3D /* AccountState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountState.swift; sourceTree = "<group>"; };
 		7A22426E2395360200FFDF3D /* ERC20State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ERC20State.swift; sourceTree = "<group>"; };
+		7A7309062396DA3A0032EF5A /* TransfersState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransfersState.swift; sourceTree = "<group>"; };
+		7A730908239701850032EF5A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7AC34A20239699870030F43C /* Statechart+Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statechart+Middleware.swift"; sourceTree = "<group>"; };
 		7AC34A22239699B60030F43C /* Statechart+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statechart+Request.swift"; sourceTree = "<group>"; };
 		7AFEE02A2392AF4700FAE54E /* SimpleArgentWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleArgentWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +130,7 @@
 		7AFEE0212392AF4700FAE54E = {
 			isa = PBXGroup;
 			children = (
+				7A730908239701850032EF5A /* README.md */,
 				7AFEE04F2392B00C00FAE54E /* Podfile */,
 				7AFEE02C2392AF4700FAE54E /* SimpleArgentWallet */,
 				7AFEE0432392AF4900FAE54E /* SimpleArgentWalletTests */,
@@ -225,6 +229,7 @@
 			children = (
 				7AFEE0642392BA7200FAE54E /* Wallet.swift */,
 				7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */,
+				7A7309062396DA3A0032EF5A /* TransfersState.swift */,
 				7A22426C23952B1300FFDF3D /* AccountState.swift */,
 				7A22426E2395360200FFDF3D /* ERC20State.swift */,
 				7AFEE07F23933DC900FAE54E /* Services */,
@@ -505,6 +510,7 @@
 				7AFEE0602392B88400FAE54E /* Root.swift in Sources */,
 				7AFEE08323933E4C00FAE54E /* WalletViewController.swift in Sources */,
 				7AFEE07C23933AFD00FAE54E /* WalletViewModel.swift in Sources */,
+				7A7309072396DA3A0032EF5A /* TransfersState.swift in Sources */,
 				7AFEE05A2392B77200FAE54E /* RootWindow.swift in Sources */,
 				7AFEE07E23933DC100FAE54E /* NetworkRequester.swift in Sources */,
 				7AFEE077239309A400FAE54E /* PinValidator.swift in Sources */,
