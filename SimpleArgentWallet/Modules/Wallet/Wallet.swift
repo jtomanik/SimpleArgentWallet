@@ -21,7 +21,10 @@ extension Modules.Wallet {
     static func make() -> UIViewController {
         let vm = ArgentWallet(walletInfo: container.resolver.fetch(WalletProvider.self),
                               balanceInfo: container.resolver.fetch(BalanceInformationProvider.self),
-                              priceFeed: container.resolver.fetch(PriceFeedProvider.self))
+                              priceFeed: container.resolver.fetch(PriceFeedProvider.self),
+                              transferInfo: container.resolver.fetch(ERC20TransferProvider.self),
+                              symbolInfo: container.resolver.fetch(ERC20SymbolProvider.self),
+                              nameInfo: container.resolver.fetch(ERC20NameProvider.self))
         let vc = WalletViewController(viewModel: vm)
         return vc
     }
@@ -44,6 +47,18 @@ extension Modules.Wallet: Assembly {
 
         container.register(BalanceInformationProvider.self) { r in
             BalanceInformation(requester: r.fetch(EthereumRequester.self))
+        }.inObjectScope(.container)
+
+        container.register(ERC20TransferProvider.self) { r in
+            ERC20TransferInformation(requester: r.fetch(EthereumRequester.self))
+        }.inObjectScope(.container)
+
+        container.register(ERC20SymbolProvider.self) { r in
+            ERC20SymbolInformation(requester: r.fetch(EthereumRequester.self))
+        }.inObjectScope(.container)
+
+        container.register(ERC20NameProvider.self) { r in
+            ERC20NameInformation(requester: r.fetch(EthereumRequester.self))
         }.inObjectScope(.container)
 
         container.register(WalletProvider.self) { _ in
