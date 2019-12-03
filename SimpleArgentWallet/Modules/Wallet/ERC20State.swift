@@ -24,35 +24,57 @@ extension Modules.Wallet.ERC20 {
 
         case initial
         case loading(Ethereum.Address)
-        case short(Context)
-        case full(Context)
+        case short([Ethereum.ERC20Transaction])
+        case full([Ethereum.ERC20Transaction])
 
         enum Events {
             case load(for: Ethereum.Address)
             case fetchedTransactions([Ethereum.Transaction])
-            case fetchedTokenDetails(Ethereum.ERC20)
+            case fetchedTransactionDetails([Ethereum.ERC20Transaction])
+            case expand
+            case collapse
             case error
-        }
-
-        struct Context: Equatable {
-            let transactions: [Ethereum.Transaction]?
-            let tokenInfo: [Ethereum.ERC20]?
-            let tokenTransactions: [Ethereum.ERC20Transaction]?
         }
     }
 }
 
-extension Modules.Wallet.ERC20.State.Context {
+extension Modules.Wallet.ERC20.State {
 
-    init() {
-        transactions = nil
-        tokenInfo = nil
-        tokenTransactions = nil
+    var transactions: [Ethereum.ERC20Transaction]? {
+        switch self {
+        case .full(let transactions):
+            return transactions
+
+        case .short(let transactions):
+            return transactions
+
+        default:
+            return nil
+        }
     }
 }
 
 extension Modules.Wallet.ERC20.State: ReducableState {
     typealias State = Modules.Wallet.ERC20.State
+
+    static func reduce(_ state: State, _ event: State.Events) -> State {
+        switch (state, event) {
+        case (.initial, .load(let address)):
+            return .loading(address)
+
+        case (.loading, .fetchedTransactionDetails(let transactions)):
+            return .short(transactions)
+
+        case (.short(let transactions), .expand):
+            return .full(transactions)
+
+        case (.full(let transactions), .collapse):
+            return .short(transactions)
+
+        default:
+            return state
+        }
+    }
 }
 
 protocol ERC20TransferProvider: class {
@@ -68,9 +90,28 @@ protocol ERC20NameProvider: class {
 
 extension Modules.Wallet.ERC20.State {
 
-    static func makeMiddleware(symblInfo: ERC20SymbolProvider, nameInfo: ERC20NameProvider) -> Middleware {
+    static func makeMiddleware(symbolInfo: ERC20SymbolProvider, nameInfo: ERC20NameProvider) -> Middleware {
         return Modules.Wallet.ERC20.State.parallelMiddlewares(from: [
-            Modules.Wallet.ERC20.State.passthroughMiddleware()
+            Modules.Wallet.ERC20.State.passthroughMiddleware(),
+
+            Modules.Wallet.ERC20.State.makeMiddleware(when: { (event) -> [Ethereum.Transaction]? in
+                guard case let .fetchedTransactions(transactions) = event else { return nil }; return transactions }
+            ) { (transactions) -> Observable<Modules.Wallet.ERC20.State.Events> in
+                return Observable
+                    .from(transactions)
+                    .observeOn(MainScheduler.asyncInstance)
+                    .flatMap { transaction in
+                        symbolInfo
+                            .fetch(for: transaction.contract)
+                            .observeOn(MainScheduler.asyncInstance)
+                            .catchErrorJustReturn("ERR")
+                            .map { Ethereum.ERC20(contract: transaction.contract, symbol: $0) }
+                            .map { Ethereum.ERC20Transaction(token: $0, transaction: transaction) }
+                }
+                    .reduce(Array<Ethereum.ERC20Transaction>()) { (acc, tx) -> [Ethereum.ERC20Transaction] in
+                        return acc + [tx] }
+                    .map { Modules.Wallet.ERC20.State.Events.fetchedTransactionDetails($0)}
+            }
         ])
     }
 
