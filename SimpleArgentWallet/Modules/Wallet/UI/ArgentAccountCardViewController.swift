@@ -19,14 +19,27 @@ extension Modules.Wallet {
         let balance: String
         let value: String
     }
+
+    struct TransactionsCardModel {
+        let isTransactionListExpanded: Bool
+        let transfers: [TransferCardModel]?
+    }
+
+    struct TransferCardModel {
+        let from: String
+        let contract: String
+        let symbol: String
+        let value: String
+    }
 }
 
 class ArgentAccountCardController: CardPartsViewController {
 
-    private let cardModel: Modules.Wallet.AccountCardModel
+    weak var viewModel: WalletViewModel!
+    let disposeBag = DisposeBag()
 
-    init(cardModel: Modules.Wallet.AccountCardModel) {
-        self.cardModel = cardModel
+    init(viewModel: WalletViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -38,47 +51,77 @@ class ArgentAccountCardController: CardPartsViewController {
         super.viewDidLoad()
 
         setupView()
+        bindViewModel()
+        setupCallbacks()
     }
 
     func setupView() {
-        setupCardParts(ArgentAccountCardController.build(from: cardModel))
-    }
-}
-
-extension ArgentAccountCardController: ShadowCardTrait {
-    func shadowOffset() -> CGSize {
-        return CGSize(width: 1.0, height: 1.0)
+        let newState: CardState = .loading
+        setupCardParts(ArgentAccountCardController.makeCardTitle(), forState: newState)
+        state = .loading
+        invalidateLayout()
     }
 
-    func shadowColor() -> CGColor {
-        return UIColor.lightGray.cgColor
+    func bindViewModel() {
+        self.viewModel
+            .displayModel
+            .observeOn(MainScheduler.instance)
+            .subscribeNext(weak: self, ArgentAccountCardController.update)
+            .disposed(by: disposeBag)
     }
 
-    func shadowRadius() -> CGFloat {
-        return 10.0
+    func setupCallbacks() {
+        self.cardTapped(forState: .empty) { [viewModel] in
+            viewModel?.showTransactions()
+        }
+
+        self.cardTapped(forState: .hasData) { [viewModel] in
+            viewModel?.hideStransactions()
+        }
     }
 
-    func shadowOpacity() -> Float {
-        return 0.8
-    }
-}
+    private func update(_ displayModel: Modules.Wallet.DisplayModel) {
+        guard let account = displayModel.account else {
+            setupView()
+            return
+        }
 
-extension ArgentAccountCardController: RoundedCardTrait {
-    func cornerRadius() -> CGFloat {
-        return 10.0
+        let isExpanded = displayModel.transactions?.isTransactionListExpanded ?? false
+        let newState: CardState = isExpanded ? .hasData : .empty
+
+        var parts: [CardPartView] = []
+
+        parts.append(contentsOf: ArgentAccountCardController.makeCardParts(from: account))
+
+        if let transactions = displayModel.transactions {
+            parts.append(contentsOf: ArgentAccountCardController.makeCardParts(from: transactions))
+        }
+
+        setupCardParts(parts, forState: newState)
+        state = newState
+        invalidateLayout()
     }
 }
 
 extension ArgentAccountCardController {
 
-    static func build(from model: Modules.Wallet.AccountCardModel) -> [CardPartView] {
-        let theme = WalletTheme()
+    private static let theme = WalletTheme()
+
+    static func makeCardTitle() -> [CardPartView] {
         var parts: [CardPartView] = []
 
         let headerView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .right)
         headerView.leftTitleText = "Argent Wallet"
         headerView.leftTitleFont = theme.headerTextFont
         parts.append(headerView)
+
+        return parts
+    }
+
+    static func makeCardParts(from model: Modules.Wallet.AccountCardModel) -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        parts.append(contentsOf: makeCardTitle())
 
         if let seed = model.imageSeed {
             let blockies = Blockies(seed: seed)
@@ -113,5 +156,85 @@ extension ArgentAccountCardController {
         return parts
     }
 
+    static func makeCardParts(from model: Modules.Wallet.TransactionsCardModel) -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        if let transactions = model.transfers {
+            if model.isTransactionListExpanded {
+                parts.append(contentsOf: makeTransfersList(from: transactions))
+            } else {
+                parts.append(CardPartSeparatorView())
+                parts.append(makeTransactionsSummary(with: transactions.count))
+            }
+        }
+
+        return parts
+    }
+
+    private static func makeTransactionsSummary(with count: Int) -> CardPartView {
+        let transactionsSummaryView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 0))
+        transactionsSummaryView.leftTitleText = "ERC20 transactions:"
+        transactionsSummaryView.leftTitleFont = theme.normalTextFont
+        transactionsSummaryView.rightTitleText = "\(count)"
+        transactionsSummaryView.rightTitleFont = theme.normalTextFont
+        return transactionsSummaryView
+    }
+
+    private static func makeTransfersList(from model: [Modules.Wallet.TransferCardModel]) -> [CardPartView] {
+        var parts: [CardPartView] = []
+        model.forEach { parts.append(contentsOf: makeTransferRow(from: $0)) }
+        return parts
+    }
+
+    static private func makeTransferRow(from model: Modules.Wallet.TransferCardModel) -> [CardPartView] {
+        var parts: [CardPartView] = []
+
+        parts.append(CardPartSeparatorView())
+
+        let blockies = Blockies(seed: model.from)
+        let accountView = CardPartIconLabel()
+        accountView.verticalPadding = 10
+        accountView.padding = 0
+        accountView.text = "from: \(model.from)"
+        accountView.textAlignment = .left
+        accountView.font = theme.smallTextFont
+        accountView.numberOfLines = 0
+        accountView.iconPadding = 5
+        accountView.icon = blockies.createImage()
+        accountView.iconPosition = ( .left, .center )
+        parts.append(accountView)
+
+        let tokenValueView = CardPartTitleDescriptionView(titlePosition: .top, secondaryPosition: .center(amount: 70))
+        tokenValueView.leftTitleText = "amount: \(model.value)"
+        tokenValueView.leftTitleFont = theme.normalTextFont
+        tokenValueView.rightTitleText = "token: \(model.symbol)"
+        tokenValueView.rightTitleFont = theme.normalTextFont
+        parts.append(tokenValueView)
+
+        return parts
+    }
 }
 
+extension ArgentAccountCardController: ShadowCardTrait {
+    func shadowOffset() -> CGSize {
+        return CGSize(width: 1.0, height: 1.0)
+    }
+
+    func shadowColor() -> CGColor {
+        return UIColor.lightGray.cgColor
+    }
+
+    func shadowRadius() -> CGFloat {
+        return 10.0
+    }
+
+    func shadowOpacity() -> Float {
+        return 0.8
+    }
+}
+
+extension ArgentAccountCardController: RoundedCardTrait {
+    func cornerRadius() -> CGFloat {
+        return 10.0
+    }
+}

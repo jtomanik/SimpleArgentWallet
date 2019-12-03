@@ -15,7 +15,8 @@ import RxCocoa
 extension Modules.Wallet {
 
     struct DisplayModel {
-        let account: AccountCardModel
+        let account: AccountCardModel?
+        let transactions: TransactionsCardModel?
     }
 }
 
@@ -53,10 +54,14 @@ class WalletViewController: CardsViewController {
     }
 
     private func update(_ displayModel: Modules.Wallet.DisplayModel) {
-        var cards: [CardPartsViewController] = []
-        let accountCard = ArgentAccountCardController(cardModel: displayModel.account)
-        cards.append(accountCard)
-        loadCards(cards: cards)
+        if let _ = displayModel.account {
+            var cards: [CardPartsViewController] = []
+            let accountCard = ArgentAccountCardController(viewModel: viewModel)
+            cards.append(accountCard)
+            loadCards(cards: cards)
+        } else {
+            setupView()
+        }
     }
 }
 
