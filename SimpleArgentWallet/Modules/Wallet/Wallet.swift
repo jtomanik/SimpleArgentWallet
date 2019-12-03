@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Swinject
+import web3
 
 extension Modules {
 
@@ -24,7 +25,8 @@ extension Modules.Wallet {
                               priceFeed: container.resolver.fetch(PriceFeedProvider.self),
                               transferInfo: container.resolver.fetch(ERC20TransferProvider.self),
                               symbolInfo: container.resolver.fetch(ERC20SymbolProvider.self),
-                              nameInfo: container.resolver.fetch(ERC20NameProvider.self))
+                              nameInfo: container.resolver.fetch(ERC20NameProvider.self),
+                              tokenTransfer: container.resolver.fetch(ArgentTokenTransfer.self))
         let vc = WalletViewController(viewModel: vm)
         return vc
     }
@@ -61,8 +63,14 @@ extension Modules.Wallet: Assembly {
             ERC20NameInformation(requester: r.fetch(EthereumRequester.self))
         }.inObjectScope(.container)
 
-        container.register(WalletProvider.self) { _ in
-            Keystore()
+        container.register(ArgentTokenTransfer.self) { r in
+            ArgentTransferTokenOperation(requester: r.fetch(EthereumRequester.self),
+                                         keyProvider: r.fetch(EthereumKeyStorageProtocol.self))
         }.inObjectScope(.container)
+
+        container.register(Keystore.self) { _ in
+            Keystore()
+        }.implements(WalletProvider.self, EthereumKeyStorageProtocol.self)
+        .inObjectScope(.container)
     }
 }

@@ -15,17 +15,15 @@ class SignedEthereumRequest: BaseEthereumRequest {
 
     let account: EthereumAccount
 
-    init?(requester: EthereumRequester,
+    init(requester: EthereumRequester,
          keyProvider: EthereumKeyStorageProtocol) {
-        guard let account = try? EthereumAccount(keyStorage: keyProvider) else {
-            return nil
-        }
+        let account = try! EthereumAccount(keyStorage: keyProvider)
         self.account = account
         super.init(requester: requester)
     }
 }
 
-class ArgentTransferTokenOperation: SignedEthereumRequest {
+class ArgentTransferTokenOperation: SignedEthereumRequest, ArgentTokenTransfer {
 
     func execute(_ functionModel: Argent.TransferManager.TransferTokenInputs, signedBy wallet: Ethereum.Wallet ) -> Observable<String> {
         return Observable<String>.create { [requester, account] observer -> Disposable in
