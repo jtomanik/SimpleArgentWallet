@@ -10,6 +10,8 @@
 		529EFB6D58819C1340140FC5 /* Pods_SimpleArgentWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F27936C1CC20A0266621C67B /* Pods_SimpleArgentWallet.framework */; };
 		7A22426D23952B1300FFDF3D /* AccountState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A22426C23952B1300FFDF3D /* AccountState.swift */; };
 		7A22426F2395360200FFDF3D /* ERC20State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A22426E2395360200FFDF3D /* ERC20State.swift */; };
+		7AC34A21239699870030F43C /* Statechart+Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC34A20239699870030F43C /* Statechart+Middleware.swift */; };
+		7AC34A23239699B60030F43C /* Statechart+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC34A22239699B60030F43C /* Statechart+Request.swift */; };
 		7AFEE02E2392AF4700FAE54E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFEE02D2392AF4700FAE54E /* AppDelegate.swift */; };
 		7AFEE0372392AF4900FAE54E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AFEE0362392AF4900FAE54E /* Assets.xcassets */; };
 		7AFEE03A2392AF4900FAE54E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AFEE0382392AF4900FAE54E /* LaunchScreen.storyboard */; };
@@ -59,6 +61,8 @@
 		4B0A498C8029B20A3DD3D5E7 /* Pods-SimpleArgentWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleArgentWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-SimpleArgentWalletTests/Pods-SimpleArgentWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A22426C23952B1300FFDF3D /* AccountState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountState.swift; sourceTree = "<group>"; };
 		7A22426E2395360200FFDF3D /* ERC20State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ERC20State.swift; sourceTree = "<group>"; };
+		7AC34A20239699870030F43C /* Statechart+Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statechart+Middleware.swift"; sourceTree = "<group>"; };
+		7AC34A22239699B60030F43C /* Statechart+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statechart+Request.swift"; sourceTree = "<group>"; };
 		7AFEE02A2392AF4700FAE54E /* SimpleArgentWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleArgentWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AFEE02D2392AF4700FAE54E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFEE0362392AF4900FAE54E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -167,6 +171,8 @@
 			isa = PBXGroup;
 			children = (
 				7AFEE0512392B29500FAE54E /* Automata.swift */,
+				7AC34A20239699870030F43C /* Statechart+Middleware.swift */,
+				7AC34A22239699B60030F43C /* Statechart+Request.swift */,
 				7AFEE0542392B2CA00FAE54E /* ObservableType+OptionalType.swift */,
 			);
 			path = Automata;
@@ -218,9 +224,9 @@
 			isa = PBXGroup;
 			children = (
 				7AFEE0642392BA7200FAE54E /* Wallet.swift */,
+				7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */,
 				7A22426C23952B1300FFDF3D /* AccountState.swift */,
 				7A22426E2395360200FFDF3D /* ERC20State.swift */,
-				7AFEE07B23933AFD00FAE54E /* WalletViewModel.swift */,
 				7AFEE07F23933DC900FAE54E /* Services */,
 				7AFEE08423933E5400FAE54E /* UI */,
 				7AFEE0892393CF3E00FAE54E /* Domain */,
@@ -486,6 +492,7 @@
 				7AFEE0732392F29100FAE54E /* LockUIComponents.swift in Sources */,
 				7AFEE0682392BAEB00FAE54E /* RootViewModel.swift in Sources */,
 				7AFEE0912394235200FAE54E /* WalletTheme.swift in Sources */,
+				7AC34A21239699870030F43C /* Statechart+Middleware.swift in Sources */,
 				7AFEE0702392F26700FAE54E /* LockViewController.swift in Sources */,
 				7A22426F2395360200FFDF3D /* ERC20State.swift in Sources */,
 				7A22426D23952B1300FFDF3D /* AccountState.swift in Sources */,
@@ -508,6 +515,7 @@
 				7AFEE08D2394159600FAE54E /* BaseEthereumRequests.swift in Sources */,
 				7AFEE0622392B9AD00FAE54E /* Lock.swift in Sources */,
 				7AFEE0932394238500FAE54E /* ArgentAccountCardViewController.swift in Sources */,
+				7AC34A23239699B60030F43C /* Statechart+Request.swift in Sources */,
 				7AFEE095239455F400FAE54E /* Keystore.swift in Sources */,
 				7AFEE08B23940B9400FAE54E /* Argent.swift in Sources */,
 				7AFEE08F23941BFD00FAE54E /* SignedEthereumRequest.swift in Sources */,
