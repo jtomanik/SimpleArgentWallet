@@ -71,20 +71,55 @@ class ERC20NameInformation: BaseEthereumRequest, ERC20NameProvider {
 class ERC20SymbolInformation: BaseEthereumRequest, ERC20SymbolProvider {
 
     func fetch(for contract: Ethereum.Address) -> Observable<String> {
-        return Observable<String>.create { [requester] observer -> Disposable in
-            ERC20(client: requester.client).symbol(tokenContract: contract.toWeb3()) { (error, value) in
+        return Observable<String>.create { [weak self, requester] observer -> Disposable in
+            guard let tx = try? ERC20Functions.symbol(contract: contract.toWeb3()).transaction() else {
+                observer.onError(EthereumError.clientError)
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            requester.client.eth_call(tx, block: .Latest) { (error, value) in
                 if let error = error {
                     observer.onError(EthereumError.clientError)
                     return
                 }
-                guard let value = value else {
-                    return observer.onError(EthereumError.responseError)
+                guard let value = self?.convert(hexString: value) else {
+                    observer.onError(EthereumError.responseError)
+                    return
                 }
+
                 observer.onNext(value)
                 observer.onCompleted()
             }
             return Disposables.create()
         }
+    }
+
+    private func convert(hexString: String?) -> String? {
+        guard let hexString = hexString else {
+            return nil
+        }
+        let stringResultPrefix = "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000"
+        if hexString.hasPrefix(stringResultPrefix) {
+            let rawHexString = String(hexString.dropFirst(stringResultPrefix.count))
+            let charsArray = Array(rawHexString)
+            let numbersArray = stride(from: 0, to: charsArray.count, by: 2).map() {
+                strtoul(String(charsArray[$0 ..< min($0 + 2, charsArray.count)]), nil, 16)
+            }
+            if let resultLength = numbersArray.first {
+                let resultArray = numbersArray.dropFirst().prefix(Int(resultLength)).map { Character(UnicodeScalar(UInt8($0))) }
+                return String(resultArray)
+            }
+        } else {
+            let rawHexString = String(hexString.replacingOccurrences(of: "00", with: "").dropFirst(2))
+            let charsArray = Array(rawHexString)
+            let numbersArray = stride(from: 0, to: charsArray.count, by: 2).map() {
+                strtoul(String(charsArray[$0 ..< min($0 + 2, charsArray.count)]), nil, 16)
+            }
+            let resultArray = numbersArray.map { Character(UnicodeScalar(UInt8($0))) }
+            return String(resultArray)
+        }
+        return nil
     }
 }
 
