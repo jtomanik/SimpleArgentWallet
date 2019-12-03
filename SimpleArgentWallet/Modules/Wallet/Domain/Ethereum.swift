@@ -35,19 +35,19 @@ extension Ethereum {
     struct Transaction: Equatable {
         let from: Address
         let to: Address
+        let contract: Address
         let amount: BigUInt
+        let block: BigUInt?
     }
 
     struct ERC20: Equatable {
         let contract: Address
-        let name: String
         let symbol: String
     }
 
     struct ERC20Transaction: Equatable {
         let token: ERC20
         let transaction: Transaction
-        let block: BigUInt
     }
 }
 
@@ -92,7 +92,7 @@ fileprivate extension String {
     }
 }
 
-fileprivate extension BigUInt {
+extension BigUInt {
 
     init?(hexString: String) {
         guard let value = BigUInt(hexString.filterHex(), radix: 16) else {

@@ -95,10 +95,13 @@ extension Modules.Wallet.Account.State: ReducableState {
         case (.initial, .fetchedWallet(let wallet)):
             let context = State.Context().with(wallet: wallet)
             return .loading(context)
+
         case (.loading(let context), .fetchedPrice(let price)):
             return hasFinishedLoading(with: context.with(price: price))
+
         case (.loading(let context), .fetchedBalance(let balance)):
             return hasFinishedLoading(with: context.with(balance: balance))
+
         default:
             return state
         }

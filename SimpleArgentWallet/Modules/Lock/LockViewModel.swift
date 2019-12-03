@@ -15,7 +15,6 @@ protocol RoutableLock {
 
 protocol LockViewModel: class, RoutableLock {
     var pinLength: Int { get }
-
     var displayModel: Observable<Modules.Lock.DisplayModel> { get }
 
     func tapped(_ digit: Int)
@@ -154,10 +153,13 @@ extension PinLock: LockViewModel {
         switch state {
         case .initial:
             return Modules.Lock.DisplayModel(currentPINlength: 0, isWrongPIN: false)
+
         case .pin(let digits):
             return Modules.Lock.DisplayModel(currentPINlength: digits.count, isWrongPIN: false)
+
         case .invalid:
             return Modules.Lock.DisplayModel(currentPINlength: Modules.Lock.State.pinLength, isWrongPIN: true)
+
         default:
             return nil
         }
