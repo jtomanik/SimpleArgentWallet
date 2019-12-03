@@ -14,8 +14,6 @@ target 'SimpleArgentWallet' do
     pod 'web3.swift'
 
     pod 'CardParts'
-    pod 'Cartography'
-    pod 'SwiftEntryKit'
     pod 'BlockiesSwift'
 end
 

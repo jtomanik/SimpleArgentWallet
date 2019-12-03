@@ -6,11 +6,9 @@ PODS:
     - RxDataSources (~> 3.1)
     - RxGesture (~> 2.2)
     - RxSwift (~> 4.5)
-  - Cartography (4.0.0)
   - Differentiator (3.1.0)
   - Nimble (7.3.4)
   - Quick (2.2.0)
-  - QuickLayout (3.0.0)
   - RxBlocking (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxCocoa (4.5.0):
@@ -34,8 +32,6 @@ PODS:
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
   - RxSwift (4.5.0)
-  - SwiftEntryKit (1.2.3):
-    - QuickLayout (= 3.0.0)
   - Swinject (2.7.1)
   - web3.swift (0.3.2):
     - BigInt (~> 5.0.0)
@@ -43,7 +39,6 @@ PODS:
 DEPENDENCIES:
   - BlockiesSwift
   - CardParts
-  - Cartography
   - Nimble
   - Quick
   - RxBlocking
@@ -51,7 +46,6 @@ DEPENDENCIES:
   - RxNimble
   - RxOptional
   - RxSwift
-  - SwiftEntryKit
   - Swinject
   - web3.swift
 
@@ -60,11 +54,9 @@ SPEC REPOS:
     - BigInt
     - BlockiesSwift
     - CardParts
-    - Cartography
     - Differentiator
     - Nimble
     - Quick
-    - QuickLayout
     - RxBlocking
     - RxCocoa
     - RxDataSources
@@ -72,7 +64,6 @@ SPEC REPOS:
     - RxNimble
     - RxOptional
     - RxSwift
-    - SwiftEntryKit
     - Swinject
     - web3.swift
 
@@ -80,11 +71,9 @@ SPEC CHECKSUMS:
   BigInt: 74b4d88367b0e819d9f77393549226d36faeb0d8
   BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CardParts: dd1e44302132d0a9922157a9c74e936431ba3454
-  Cartography: c5626d29056b20f1e95c017326ee4df57cc39ad8
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
-  QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
   RxBlocking: 79413e4d916f44bb3e113c5b2cc059e36fe58910
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
@@ -92,10 +81,9 @@ SPEC CHECKSUMS:
   RxNimble: ba6caf0195c37fd50dd4b967624b66ff580d781a
   RxOptional: 80426a0ddbd092573e4c482d8cc13302078c4d5e
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   web3.swift: 8fe8bd96a6170851eaefc36eb94298d35d471079
 
-PODFILE CHECKSUM: cccbae9c739d372a0ff4a482a6caf251fe0ff43d
+PODFILE CHECKSUM: 96de89449787955c8958378e5c82c2597b7bed47
 
 COCOAPODS: 1.8.4
