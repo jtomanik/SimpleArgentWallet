@@ -54,8 +54,8 @@ class ArgentTransferTokenOperation: SignedEthereumRequest, ArgentTokenTransfer {
             return Argent.TransferManager.TransferTokenInputs.name
         }
 
-        let gasPrice: BigUInt? = 250000
-        let gasLimit: BigUInt? = 12
+        let gasPrice: BigUInt? = 12
+        let gasLimit: BigUInt? = 250000
         let contract: EthereumAddress = Argent.TransferManager.contractAddress.toWeb3()
         var from: EthereumAddress? {
             return domainModel.wallet.toWeb3()
