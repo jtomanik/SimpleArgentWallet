@@ -92,21 +92,26 @@ class ERC20TransferInformation: BaseEthereumRequest, ERC20TransferProvider {
 
     func fetch(for address: Ethereum.Address) -> Observable<[Ethereum.Transaction]> {
         return Observable<[Ethereum.Transaction]>.create { [requester] observer -> Disposable in
-            ERC20(client: requester.client).transferEventsTo(recipient: address.toWeb3(),
-                                                             fromBlock: .Earliest,
-                                                             toBlock: .Latest) { (error, value) in
-                                                                if let error = error {
-                                                                    observer.onError(EthereumError.clientError)
-                                                                    return
-                                                                }
-                                                                guard let transfers = value else {
-                                                                    return observer.onError(EthereumError.responseError)
-                                                                }
-                                                                let parsed = transfers.map { Ethereum.Transaction(from: $0.from.toDomain(),
-                                                                                                                  to: $0.to.toDomain(),
-                                                                                                                  amount: $0.value) }
-                                                                observer.onNext(parsed)
-                                                                observer.onCompleted()
+            ERC20(client: requester.client)
+                .transferEventsTo(recipient: address.toWeb3(),
+                                  fromBlock: .Earliest,
+                                  toBlock: .Latest) { (error, value) in
+                                    if let error = error {
+                                        observer.onError(EthereumError.clientError)
+                                        return
+                                    }
+                                    guard let transfers = value else {
+                                        observer.onError(EthereumError.responseError)
+                                        return
+                                    }
+                                    
+                                    let parsed = transfers.map { Ethereum.Transaction(from: $0.from.toDomain(),
+                                                                                      to: $0.to.toDomain(),
+                                                                                      contract: $0.log.address.toDomain(),
+                                                                                      amount: $0.value,
+                                                                                      block: BigUInt(hexString: $0.log.blockNumber.stringValue)) }
+                                    observer.onNext(parsed)
+                                    observer.onCompleted()
             }
 
             return Disposables.create()
