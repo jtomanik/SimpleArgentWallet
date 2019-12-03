@@ -15,8 +15,9 @@ extension Argent {
 
     struct TransferManager {
         static let contractAddress = Ethereum.Address(hexString: "0xcdAd167a8A9EAd2DECEdA7c8cC908108b0Cc06D1")!
+        static let ethTokenAddress = Ethereum.Address(hexString: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE")!
 
-        struct TransferTokenInputs {
+        struct TransferTokenInputs: Equatable {
             static let name = "transferToken"
             
             let wallet: Ethereum.Address

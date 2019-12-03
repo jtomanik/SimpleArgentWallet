@@ -14,8 +14,9 @@ import RxCocoa
 
 extension Modules.Wallet {
 
-    struct DisplayModel {
+    struct DisplayModel: Equatable {
         let account: AccountCardModel?
+        let transfers: TransfersCardModel?
         let transactions: TransactionsCardModel?
     }
 }

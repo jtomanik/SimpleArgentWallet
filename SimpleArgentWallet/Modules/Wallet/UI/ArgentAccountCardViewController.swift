@@ -8,24 +8,30 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import CardParts
 import BlockiesSwift
 
 extension Modules.Wallet {
 
-    struct AccountCardModel {
+    struct AccountCardModel: Equatable {
         let imageSeed: String?
         let name: String
         let balance: String
         let value: String
     }
 
-    struct TransactionsCardModel {
-        let isTransactionListExpanded: Bool
-        let transfers: [TransferCardModel]?
+    struct TransfersCardModel: Equatable {
+        let isSendButtonEnabled: Bool
+        let transactionHashes: [String]
     }
 
-    struct TransferCardModel {
+    struct TransactionsCardModel: Equatable {
+        let isTransactionListExpanded: Bool
+        let transactions: [TransactionCardModel]?
+    }
+
+    struct TransactionCardModel: Equatable {
         let from: String
         let contract: String
         let symbol: String
