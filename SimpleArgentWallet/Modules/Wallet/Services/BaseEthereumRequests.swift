@@ -33,8 +33,10 @@ class BalanceInformation: BaseEthereumRequest, BalanceInformationProvider {
                                         return
                                     }
                                     guard let value = value else {
-                                        return observer.onError(EthereumError.responseError)
+                                        observer.onError(EthereumError.responseError)
+                                        return
                                     }
+
                                     observer.onNext(value)
                                     observer.onCompleted()
             }
@@ -54,8 +56,10 @@ class ERC20NameInformation: BaseEthereumRequest, ERC20NameProvider {
                     return
                 }
                 guard let value = value else {
-                    return observer.onError(EthereumError.responseError)
+                    observer.onError(EthereumError.responseError)
+                    return
                 }
+
                 observer.onNext(value)
                 observer.onCompleted()
             }

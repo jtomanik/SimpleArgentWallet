@@ -120,14 +120,20 @@ extension Modules.Wallet.Account.State {
 
                 let balance = balanceInfo
                     .fetch(for: wallet.address)
-                    .map {
-                        Modules.Wallet.Account.State.Events.fetchedBalance($0) }
+                    .observeOn(MainScheduler.asyncInstance)
+                    .catchErrorJustReturn(0)
+                    .map { Modules.Wallet.Account.State.Events.fetchedBalance($0) }
+
                 let price = priceFeed
                     .fetch()
+                    .observeOn(MainScheduler.asyncInstance)
+                    .catchErrorJustReturn(0.0)
                     .map {
                         Modules.Wallet.Account.State.Events.fetchedPrice($0) }
 
-                return Observable.merge(balance, price)
+                return Observable
+                    .merge(balance, price)
+                    .observeOn(MainScheduler.asyncInstance)
             }
         ])
     }
@@ -138,8 +144,8 @@ extension Modules.Wallet.Account.State {
         ) { (_) -> Observable<Modules.Wallet.Account.State.Events> in
             return walletInfo
                 .fetch()
-                .map {
-                    Modules.Wallet.Account.State.Events.fetchedWallet($0) }
+                .observeOn(MainScheduler.asyncInstance)
+                .map { Modules.Wallet.Account.State.Events.fetchedWallet($0) }
         }
     }
 }

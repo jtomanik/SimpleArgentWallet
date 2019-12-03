@@ -80,8 +80,9 @@ extension Modules.Wallet.ERC20.State {
         ) { (address) -> Observable<Modules.Wallet.ERC20.State.Events> in
             return transferInfo
                 .fetch(for: address)
-                .map {
-                    Modules.Wallet.ERC20.State.Events.fetchedTransactions($0) }
+                .observeOn(MainScheduler.asyncInstance)
+                .catchErrorJustReturn([])
+                .map { Modules.Wallet.ERC20.State.Events.fetchedTransactions($0) }
         }
     }
 }
